@@ -1,0 +1,31 @@
+{
+  "name": "movie-poster-ai-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Movie Poster AI - handles API calls to Anthropic Claude and OpenAI DALL-E 3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "movie",
+    "poster",
+    "ai",
+    "claude",
+    "dall-e",
+    "generator"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

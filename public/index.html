@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Movie Poster AI - Enhanced</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400;700&family=Montserrat:wght@400;700;900&family=Oswald:wght@400;700&family=Poppins:wght@400;600;700&family=Orbitron:wght@700;900&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', sans-serif; }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        .poster-glow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-ring {
+            animation: pulseRing 2s infinite;
+        }
+        
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-7xl mx-auto">
+        <!-- Enhanced Header -->
+        <header class="text-center mb-12 fade-in">
+            <h1 class="text-5xl sm:text-7xl font-bebas tracking-wider gradient-text mb-4">
+                Generative Movie Poster AI
+            </h1>
+            <p class="text-xl text-gray-400 mb-2">Powered by Advanced AI • Creating Cinematic Art</p>
+            <div class="flex justify-center items-center space-x-4 text-sm text-gray-500">
+                <span id="status-indicator" class="flex items-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2 pulse-ring"></div>
+                    <span>Ready</span>
+                </span>
+                <span>•</span>
+                <span id="generation-counter">0 posters created</span>
+                <span>•</span>
+                <span id="auto-timer">Next: Auto</span>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            <!-- Enhanced Poster Display -->
+            <div class="xl:col-span-3 glass-morphism p-6 rounded-2xl shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-montserrat font-bold text-white">Current Generation</h2>
+                    <div class="flex space-x-2">
+                        <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Save Poster
+                        </button>
+                        <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Share
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="poster-container" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-glow floating relative">
+                    <div id="loader" class="absolute inset-0 bg-gray-800 flex items-center justify-center z-10">
+                        <div class="text-center">
+                            <svg aria-hidden="true" class="w-16 h-16 text-gray-400 animate-spin fill-blue-600 mx-auto mb-4" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                            </svg>
+                            <p id="loading-text" class="text-lg font-medium text-blue-400">Generating concept...</p>
+                            <div class="w-64 bg-gray-700 rounded-full h-2 mt-4">
+                                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <img id="poster-image" src="" alt="Generated Movie Poster" class="hidden w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Enhanced Controls and Info -->
+            <div class="xl:col-span-1 space-y-6">
+                <!-- Generation Controls -->
+                <div class="glass-morphism p-6 rounded-2xl">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Controls</h3>
+                    <div class="space-y-4">
+                        <button id="generate-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none neon-glow">
+                            <span id="btn-text">Generate New Poster</span>
+                        </button>
+                        
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-300">Auto-generate</label>
+                            <button id="auto-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-green-600 transition-colors">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-300 block mb-2">Genre Filter</label>
+                            <select id="genre-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                                <option value="any">Any Genre</option>
+                                <option value="horror">Horror</option>
+                                <option value="sci-fi">Sci-Fi</option>
+                                <option value="fusion">Sci-Fi Horror</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-300 block mb-2">Era Preference</label>
+                            <select id="era-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                                <option value="any">Any Era</option>
+                                <option value="1950s">1950s</option>
+                                <option value="1960s">1960s</option>
+                                <option value="1970s">1970s</option>
+                                <option value="1980s">1980s</option>
+                                <option value="1990s">1990s</option>
+                                <option value="2000s">2000s</option>
+                                <option value="2010s">2010s</option>
+                                <option value="2020s">2020s</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie Details -->
+                <div class="glass-morphism p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Movie Details</h3>
+                    <div id="movie-info" class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Era</label>
+                            <p id="decade-text" class="text-lg text-white font-medium">-</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Genre</label>
+                            <p id="genre-text" class="text-lg text-white font-medium">-</p>
+                        </div>
+                        <div class="border-l-4 border-yellow-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Title</label>
+                            <p id="title-text" class="text-2xl font-bebas text-yellow-400 leading-tight">-</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Tagline</label>
+                            <p id="tagline-text" class="text-base italic text-gray-300">-</p>
+                        </div>
+                        <div class="border-l-4 border-red-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Synopsis</label>
+                            <p id="synopsis-text" class="text-sm text-gray-200 leading-relaxed">-</p>
+                        </div>
+                    </div>
+                    
+                    <div id="error-message" class="hidden bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg mt-4">
+                        <p><strong>Error:</strong> <span id="error-text"></span></p>
+                        <button id="retry-btn" class="mt-2 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm">Retry</button>
+                    </div>
+                </div>
+
+                <!-- Recent Generations -->
+                <div class="glass-morphism p-6 rounded-2xl">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Recent Generations</h3>
+                    <div id="recent-posters" class="grid grid-cols-2 gap-2">
+                        <!-- Recent poster thumbnails will be added here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden elements -->
+    <canvas id="poster-canvas" class="hidden"></canvas>
+
+    <script>
+        class PosterAI {
+            constructor() {
+                console.log('PosterAI constructor called');
+                
+                this.BACKEND_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+                    ? 'http://localhost:3000' 
+                    : window.location.origin;
+                this.CONCEPT_API_URL = this.BACKEND_BASE_URL + '/api/generate-concept';
+                this.IMAGE_API_URL = this.BACKEND_BASE_URL + '/api/generate-image';
+                
+                this.isGenerating = false;
+                this.autoGenerate = true;
+                this.generationCount = 0;
+                this.autoTimer = null;
+                this.recentPosters = [];
+                this.currentConcept = null;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.checkBackendHealth();
+                this.startAutoTimer();
+                
+                setTimeout(function() {
+                    this.handleGeneration();
+                }.bind(this), 2000);
+            }
+
+            initializeElements() {
+                console.log('Initializing DOM elements...');
+                this.elements = {
+                    generateBtn: document.getElementById('generate-btn'),
+                    posterContainer: document.getElementById('poster-container'),
+                    posterImage: document.getElementById('poster-image'),
+                    loader: document.getElementById('loader'),
+                    loadingText: document.getElementById('loading-text'),
+                    progressBar: document.getElementById('progress-bar'),
+                    btnText: document.getElementById('btn-text'),
+                    
+                    decadeText: document.getElementById('decade-text'),
+                    genreText: document.getElementById('genre-text'),
+                    titleText: document.getElementById('title-text'),
+                    taglineText: document.getElementById('tagline-text'),
+                    synopsisText: document.getElementById('synopsis-text'),
+                    
+                    autoToggle: document.getElementById('auto-toggle'),
+                    genreFilter: document.getElementById('genre-filter'),
+                    eraFilter: document.getElementById('era-filter'),
+                    saveBtn: document.getElementById('save-btn'),
+                    shareBtn: document.getElementById('share-btn'),
+                    
+                    statusIndicator: document.getElementById('status-indicator'),
+                    generationCounter: document.getElementById('generation-counter'),
+                    autoTimer: document.getElementById('auto-timer'),
+                    
+                    errorMessage: document.getElementById('error-message'),
+                    errorText: document.getElementById('error-text'),
+                    retryBtn: document.getElementById('retry-btn'),
+                    
+                    recentPosters: document.getElementById('recent-posters'),
+                    canvas: document.getElementById('poster-canvas')
+                };
+                
+                this.ctx = this.elements.canvas.getContext('2d');
+                console.log('DOM elements initialized');
+            }
+
+            setupEventListeners() {
+                var self = this;
+                console.log('Setting up event listeners...');
+                
+                this.elements.generateBtn.addEventListener('click', function() {
+                    self.handleGeneration();
+                });
+                
+                this.elements.autoToggle.addEventListener('click', function() {
+                    self.toggleAutoGenerate();
+                });
+                
+                this.elements.saveBtn.addEventListener('click', function() {
+                    self.savePoster();
+                });
+                
+                this.elements.shareBtn.addEventListener('click', function() {
+                    self.sharePoster();
+                });
+                
+                this.elements.retryBtn.addEventListener('click', function() {
+                    self.handleGeneration();
+                });
+                
+                this.elements.genreFilter.addEventListener('change', function() {
+                    if (!self.isGenerating) self.handleGeneration();
+                });
+                
+                this.elements.eraFilter.addEventListener('change', function() {
+                    if (!self.isGenerating) self.handleGeneration();
+                });
+                
+                console.log('Event listeners set up');
+            }
+
+            async checkBackendHealth() {
+                try {
+                    console.log('Checking backend health...');
+                    var response = await fetch(this.BACKEND_BASE_URL + '/api/health');
+                    
+                    if (response.ok) {
+                        var health = await response.json();
+                        console.log('Backend is healthy:', health);
+                        this.updateStatus('ready', 'Backend Connected');
+                    } else {
+                        throw new Error('Backend health check failed: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Backend health check failed:', error);
+                    this.showError('Backend server not running. Please start the server with "npm start" and refresh the page.');
+                    this.updateStatus('error', 'Backend Offline');
+                }
+            }
+
+            updateProgress(stage, percentage) {
+                var stages = {
+                    'concept': 'Generating concept...',
+                    'image': 'Creating artwork...',
+                    'text': 'Adding typography...',
+                    'complete': 'Complete!'
+                };
+                
+                if (this.elements.loadingText) {
+                    this.elements.loadingText.textContent = stages[stage] || 'Processing...';
+                }
+                if (this.elements.progressBar) {
+                    this.elements.progressBar.style.width = percentage + '%';
+                }
+            }
+
+            async generateMovieConcept() {
+                console.log("Generating movie concept with Claude via backend...");
+                this.updateProgress('concept', 10);
+                
+                var payload = {
+                    genreFilter: this.elements.genreFilter.value,
+                    eraFilter: this.elements.eraFilter.value
+                };
+
+                try {
+                    console.log('Making request to: ' + this.CONCEPT_API_URL);
+                    
+                    var response = await fetch(this.CONCEPT_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var responseText = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error('Request failed with status ' + response.status + ': ' + responseText);
+                    }
+
+                    var result;
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        throw new Error('Invalid JSON response: ' + parseError.message);
+                    }
+                    
+                    if (result.success && result.concept) {
+                        console.log("Concept generated by Claude:", result.concept);
+                        this.updateProgress('concept', 30);
+                        return result.concept;
+                    } else {
+                        throw new Error(result.error || "Invalid response from backend");
+                    }
+                } catch (error) {
+                    console.error("Error generating movie concept:", error);
+                    this.showError('Failed to generate movie concept: ' + error.message);
+                    return null;
+                }
+            }
+
+            async generateImage(visualElements, concept) {
+                console.log("Generating poster image with DALL-E 3 via backend...");
+                this.updateProgress('image', 50);
+                
+                var payload = {
+                    visualElements: visualElements,
+                    concept: concept
+                };
+
+                try {
+                    var response = await fetch(this.IMAGE_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var responseText = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error('Request failed with status ' + response.status + ': ' + responseText);
+                    }
+
+                    var result;
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        throw new Error('Invalid JSON response: ' + parseError.message);
+                    }
+                    
+                    if (result.success && result.imageUrl) {
+                        console.log("Image generated successfully with DALL-E 3.");
+                        if (result.revisedPrompt) {
+                            console.log("DALL-E 3 revised prompt:", result.revisedPrompt);
+                        }
+                        this.updateProgress('image', 70);
+                        
+                        return result.imageUrl;
+                    } else {
+                        throw new Error(result.error || "Invalid response from backend");
+                    }
+                } catch (error) {
+                    console.error("Error generating image:", error);
+                    this.showError('Failed to generate poster image: ' + error.message);
+                    return null;
+                }
+            }
+
+            addTextToImage(imageUrl, concept) {
+                var self = this;
+                return new Promise(function(resolve, reject) {
+                    self.updateProgress('text', 80);
+                    console.log("Adding text to image...");
+                    
+                    var img = new Image();
+                    img.crossOrigin = "Anonymous";
+                    img.onload = function() {
+                        var aspectRatio = img.width / img.height;
+                        self.elements.canvas.width = 1200;
+                        self.elements.canvas.height = self.elements.canvas.width / aspectRatio;
+
+                        self.ctx.drawImage(img, 0, 0, self.elements.canvas.width, self.elements.canvas.height);
+                        self.renderPosterText(concept);
+                        
+                        self.updateProgress('complete', 100);
+                        console.log("Text added successfully.");
+                        resolve(self.elements.canvas.toDataURL('image/png'));
+                    };
+                    img.onerror = function() {
+                        reject(new Error("Failed to load image onto canvas."));
+                    };
+                    img.src = imageUrl;
+                });
+            }
+
+            renderPosterText(concept) {
+                var canvas = this.elements.canvas;
+                var ctx = this.ctx;
+                
+                var decadeStyles = {
+                    '1950s': { 
+                        titleFonts: ['Cinzel', 'Bebas Neue'], 
+                        style: 'classic'
+                    },
+                    '1960s': { 
+                        titleFonts: ['Bebas Neue', 'Oswald'], 
+                        style: 'psychedelic'
+                    },
+                    '1970s': { 
+                        titleFonts: ['Oswald', 'Bebas Neue'], 
+                        style: 'gritty'
+                    },
+                    '1980s': { 
+                        titleFonts: ['Orbitron', 'Montserrat'], 
+                        style: 'neon'
+                    },
+                    '1990s': { 
+                        titleFonts: ['Montserrat', 'Oswald'], 
+                        style: 'grunge'
+                    },
+                    '2000s': { 
+                        titleFonts: ['Poppins', 'Montserrat'], 
+                        style: 'digital'
+                    },
+                    '2010s': { 
+                        titleFonts: ['Montserrat', 'Poppins'], 
+                        style: 'minimal'
+                    },
+                    '2020s': { 
+                        titleFonts: ['Poppins', 'Montserrat'], 
+                        style: 'contemporary'
+                    }
+                };
+                
+                var baseStyle = decadeStyles[concept.decade] || {
+                    titleFonts: ['Montserrat', 'Poppins'],
+                    style: 'modern'
+                };
+                
+                var selectedFont = baseStyle.titleFonts[Math.floor(Math.random() * baseStyle.titleFonts.length)];
+                
+                // 1. Draw top credits (actors) first
+                this.renderTopCredits(ctx, canvas, concept);
+                
+                // 2. Main title area - adjusted to account for top credits
+                var margin = canvas.width * 0.06;
+                var titleZone = { 
+                    x: margin, 
+                    y: canvas.height * 0.25,  // Moved down to make room for top credits
+                    width: canvas.width - (margin * 2), 
+                    height: canvas.height * 0.3  // Reduced height
+                };
+                
+                var optimalColor = this.analyzeImageForOptimalTextColor(ctx, canvas, titleZone);
+                
+                console.log('Using font: ' + selectedFont + ', analyzed color: ' + optimalColor + ', style: ' + baseStyle.style);
+                
+                this.renderDynamicText(ctx, concept.title.toUpperCase(), selectedFont, titleZone, {
+                    color: optimalColor,
+                    shadow: true,
+                    glow: baseStyle.style === 'neon',
+                    style: baseStyle.style
+                });
+                
+                // 3. Tagline area - more space and better wrapping
+                var taglineY = titleZone.y + titleZone.height + 20;
+                var taglineZone = {
+                    x: margin,
+                    y: taglineY,
+                    width: canvas.width - (margin * 2),
+                    height: canvas.height * 0.15  // Dedicated space for tagline
+                };
+                
+                this.renderTagline(ctx, concept.tagline, taglineZone, optimalColor, canvas);
+                
+                // 4. Bottom credits (small text at bottom)
+                this.renderBottomCredits(ctx, canvas.width, canvas.height, concept);
+            }
+
+            analyzeImageForOptimalTextColor(ctx, canvas, textArea) {
+                var imageData = ctx.getImageData(textArea.x, textArea.y, textArea.width, textArea.height);
+                var data = imageData.data;
+                
+                var totalBrightness = 0;
+                var sampleCount = 0;
+                
+                // Sample every 50th pixel for performance
+                for (var i = 0; i < data.length; i += 200) { // RGBA, so step by 200 to sample every 50th pixel
+                    var r = data[i];
+                    var g = data[i + 1];
+                    var b = data[i + 2];
+                    
+                    // Calculate perceived brightness using standard luminance formula
+                    var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+                    totalBrightness += brightness;
+                    sampleCount++;
+                }
+                
+                var averageBrightness = totalBrightness / sampleCount;
+                
+                console.log('Background analysis - Average brightness: ' + averageBrightness.toFixed(1));
+                
+                // Simple but effective: white text for dark backgrounds, black text for light backgrounds
+                var textColor = averageBrightness < 128 ? '#FFFFFF' : '#000000';
+                
+                console.log('Selected text color: ' + textColor + ' (brightness threshold: 128)');
+                
+                return textColor;
+            }
+            
+            getComplementaryReadableColor(titleColor, ctx, canvas, yPosition) {
+                var sampleWidth = canvas.width * 0.8;
+                var sampleHeight = 50;
+                var sampleX = canvas.width * 0.1;
+                
+                try {
+                    var imageData = ctx.getImageData(sampleX, yPosition, sampleWidth, sampleHeight);
+                    var data = imageData.data;
+                    
+                    var totalBrightness = 0;
+                    var sampleCount = 0;
+                    
+                    for (var i = 0; i < data.length; i += 200) { // Sample every 50th pixel
+                        var r = data[i];
+                        var g = data[i + 1];
+                        var b = data[i + 2];
+                        
+                        var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+                        totalBrightness += brightness;
+                        sampleCount++;
+                    }
+                    
+                    var averageBrightness = totalBrightness / sampleCount;
+                    
+                    // Simple white or black based on background brightness
+                    return averageBrightness < 128 ? 'rgba(255, 255, 255, 0.95)' : 'rgba(0, 0, 0, 0.95)';
+                    
+                } catch (error) {
+                    console.warn('Could not analyze tagline background, using white text');
+                    return 'rgba(255, 255, 255, 0.95)';
+                }
+            }
+            
+            hexToRgb(hex) {
+                if (hex.startsWith('rgb')) {
+                    var match = hex.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                    if (match) {
+                        return {
+                            r: parseInt(match[1], 10),
+                            g: parseInt(match[2], 10),
+                            b: parseInt(match[3], 10)
+                        };
+                    }
+                }
+                
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : { r: 255, g: 255, b: 255 };
+            }
+
+            renderDynamicText(ctx, text, font, box, options) {
+                var fontSize = Math.min(120, box.width / 8);
+                var lines, textBlockHeight, lineHeight;
+
+                while (fontSize > 15) {
+                    lineHeight = fontSize * 1.1;
+                    ctx.font = 'bold ' + fontSize + 'px ' + font;
+                    
+                    var words = text.split(' ');
+                    var currentLine = '';
+                    lines = [];
+                    
+                    for (var j = 0; j < words.length; j++) {
+                        var word = words[j];
+                        var testLine = currentLine + word + ' ';
+                        if (ctx.measureText(testLine).width > (box.width * 0.9) && currentLine.length > 0) {
+                            lines.push(currentLine.trim());
+                            currentLine = word + ' ';
+                        } else {
+                            currentLine = testLine;
+                        }
+                    }
+                    lines.push(currentLine.trim());
+                    
+                    textBlockHeight = lines.length * lineHeight;
+                    
+                    if (textBlockHeight <= (box.height * 0.9)) {
+                        break;
+                    }
+                    
+                    fontSize -= 3;
+                }
+
+                var x = box.x + box.width / 2;
+                var startY = box.y + box.height / 2 - (textBlockHeight / 2) + (lineHeight / 2);
+                
+                // Calculate outline width based on font size
+                var outlineWidth = Math.max(fontSize / 25, 3);
+                
+                // Draw black outline by drawing text multiple times with slight offsets
+                ctx.fillStyle = options.color === '#FFFFFF' ? '#000000' : '#FFFFFF'; // Opposite color for outline
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Draw outline in 8 directions for full coverage
+                var offsets = [
+                    [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
+                    [-outlineWidth, 0], [outlineWidth, 0],
+                    [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
+                ];
+                
+                for (var d = 0; d < offsets.length; d++) {
+                    var offsetX = offsets[d][0];
+                    var offsetY = offsets[d][1];
+                    for (var i = 0; i < lines.length; i++) {
+                        ctx.fillText(lines[i], x + offsetX, startY + (i * lineHeight) + offsetY);
+                    }
+                }
+                
+                // Draw main text in white or black
+                ctx.fillStyle = options.color || '#FFFFFF';
+                
+                for (var i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], x, startY + (i * lineHeight));
+                }
+                
+                // Optional glow effect for neon styles
+                if (options.glow) {
+                    ctx.shadowColor = options.color;
+                    ctx.shadowBlur = Math.max(fontSize / 4, 15);
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    
+                    for (var i = 0; i < lines.length; i++) {
+                        ctx.fillText(lines[i], x, startY + (i * lineHeight));
+                    }
+                }
+
+                // Clear any remaining shadow effects
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+
+            renderTopCredits(ctx, canvas, concept) {
+                // Top credits area for actors (like real movie posters)
+                var topArea = {
+                    x: canvas.width * 0.1,
+                    y: canvas.height * 0.05,
+                    width: canvas.width * 0.8,
+                    height: canvas.height * 0.15
+                };
+                
+                var topColor = this.analyzeAreaForTextColor(ctx, topArea);
+                var topOutlineColor = topColor === '#FFFFFF' ? '#000000' : '#FFFFFF';
+                
+                // Get top 2-3 actors from cast
+                var topActors = concept.cast ? concept.cast.slice(0, 3) : this.generateTopActors();
+                var actorText = topActors.join('    ').toUpperCase();
+                
+                // Dynamic font sizing to span horizontally with margin
+                var maxFontSize = Math.max(canvas.width / 25, 20);  // Much larger starting size
+                var minFontSize = Math.max(canvas.width / 80, 12);
+                var fontSize = maxFontSize;
+                var textWidth;
+                
+                // Find optimal font size to fit width with margins
+                do {
+                    ctx.font = 'bold ' + fontSize + 'px Lato';
+                    textWidth = ctx.measureText(actorText).width;
+                    if (textWidth <= (topArea.width * 0.9)) break; // 90% of available width
+                    fontSize -= 2;
+                } while (fontSize >= minFontSize);
+                
+                var outlineWidth = Math.max(fontSize / 20, 2);
+                
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                var actorY = topArea.y + (topArea.height / 2);
+                
+                console.log('Actor names font size: ' + fontSize + 'px, text width: ' + textWidth + ', available: ' + topArea.width);
+                
+                // Draw outline for actors
+                ctx.fillStyle = topOutlineColor;
+                var offsets = [
+                    [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
+                    [-outlineWidth, 0], [outlineWidth, 0],
+                    [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
+                ];
+                
+                for (var d = 0; d < offsets.length; d++) {
+                    var offsetX = offsets[d][0];
+                    var offsetY = offsets[d][1];
+                    ctx.fillText(actorText, canvas.width / 2 + offsetX, actorY + offsetY);
+                }
+                
+                // Draw main actor text
+                ctx.fillStyle = topColor;
+                ctx.fillText(actorText, canvas.width / 2, actorY);
+            }
+            
+            renderTagline(ctx, taglineText, taglineZone, titleColor, canvas) {
+                // Smart tagline sizing and wrapping
+                var maxFontSize = Math.max(taglineZone.width / 30, 16);
+                var minFontSize = Math.max(taglineZone.width / 60, 12);
+                var fontSize = maxFontSize;
+                var lines, textHeight;
+                
+                // Find optimal font size for tagline
+                while (fontSize >= minFontSize) {
+                    ctx.font = 'italic ' + fontSize + 'px Lato';
+                    
+                    // Word wrap the tagline
+                    var words = taglineText.split(' ');
+                    var currentLine = '';
+                    lines = [];
+                    
+                    for (var i = 0; i < words.length; i++) {
+                        var testLine = currentLine + words[i] + ' ';
+                        if (ctx.measureText(testLine).width > (taglineZone.width * 0.9) && currentLine.length > 0) {
+                            lines.push(currentLine.trim());
+                            currentLine = words[i] + ' ';
+                        } else {
+                            currentLine = testLine;
+                        }
+                    }
+                    lines.push(currentLine.trim());
+                    
+                    var lineHeight = fontSize * 1.2;
+                    textHeight = lines.length * lineHeight;
+                    
+                    if (textHeight <= (taglineZone.height * 0.8)) {
+                        break;
+                    }
+                    
+                    fontSize -= 2;
+                }
+                
+                var taglineColor = this.getComplementaryReadableColor(titleColor, ctx, canvas, taglineZone.y);
+                var taglineOutlineColor = taglineColor.includes('255, 255, 255') ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)';
+                var taglineOutlineWidth = Math.max(fontSize / 30, 1.5);
+                
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                var startY = taglineZone.y + (taglineZone.height / 2) - (textHeight / 2) + (fontSize * 0.6);
+                
+                // Draw each line of tagline
+                for (var i = 0; i < lines.length; i++) {
+                    var lineY = startY + (i * fontSize * 1.2);
+                    
+                    // Draw outline
+                    ctx.fillStyle = taglineOutlineColor;
+                    var offsets = [
+                        [-taglineOutlineWidth, -taglineOutlineWidth], [0, -taglineOutlineWidth], [taglineOutlineWidth, -taglineOutlineWidth],
+                        [-taglineOutlineWidth, 0], [taglineOutlineWidth, 0],
+                        [-taglineOutlineWidth, taglineOutlineWidth], [0, taglineOutlineWidth], [taglineOutlineWidth, taglineOutlineWidth]
+                    ];
+                    
+                    for (var d = 0; d < offsets.length; d++) {
+                        var offsetX = offsets[d][0];
+                        var offsetY = offsets[d][1];
+                        ctx.fillText(lines[i], taglineZone.x + (taglineZone.width / 2) + offsetX, lineY + offsetY);
+                    }
+                    
+                    // Draw main tagline text
+                    ctx.fillStyle = taglineColor;
+                    ctx.fillText(lines[i], taglineZone.x + (taglineZone.width / 2), lineY);
+                }
+            }
+            
+            renderBottomCredits(ctx, width, height, concept) {
+                // Small credits at bottom like real movie posters
+                var creditArea = {
+                    x: width * 0.05,
+                    y: height - 100,  // Moved up to ensure visibility
+                    width: width * 0.9,
+                    height: 90
+                };
+                
+                var creditColor = this.analyzeAreaForTextColor(ctx, creditArea);
+                var creditOutlineColor = creditColor === '#FFFFFF' ? '#000000' : '#FFFFFF';
+                
+                var fontSize = Math.max(width / 120, 8);  // Slightly larger minimum
+                var outlineWidth = Math.max(fontSize / 25, 1);
+                
+                ctx.font = 'bold ' + fontSize + 'px Lato';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'alphabetic';
+
+                // Generate realistic fake credits
+                var studio = this.generateFakeStudio();
+                var producer = this.generateFakeProducer();
+                var composer = this.generateFakeComposer();
+                var director = concept.director || this.generateFakeDirector();
+                
+                var creditLines = [
+                    studio.toUpperCase() + " PICTURES PRESENTS • PRODUCED BY " + producer.toUpperCase(),
+                    "MUSIC BY " + composer.toUpperCase() + " • EXECUTIVE PRODUCER M. WHITMAN",
+                    "DIRECTED BY " + director.toUpperCase(),
+                    "© " + this.getRandomYear(concept.decade) + " " + studio.toUpperCase() + " ENTERTAINMENT. ALL RIGHTS RESERVED."
+                ];
+                
+                var lineHeight = Math.max(fontSize * 1.3, 10);  // Better line spacing
+                var startY = height - (creditLines.length * lineHeight) - 12;
+                
+                console.log('Drawing bottom credits at Y: ' + startY + ', font size: ' + fontSize);
+
+                // Draw credits with outline
+                for (var i = 0; i < creditLines.length; i++) {
+                    var y = startY + (i * lineHeight);
+                    
+                    // Skip if too close to bottom edge
+                    if (y > height - 5) continue;
+                    
+                    // Draw outline
+                    ctx.fillStyle = creditOutlineColor;
+                    var offsets = [
+                        [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
+                        [-outlineWidth, 0], [outlineWidth, 0],
+                        [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
+                    ];
+                    
+                    for (var d = 0; d < offsets.length; d++) {
+                        var offsetX = offsets[d][0];
+                        var offsetY = offsets[d][1];
+                        ctx.fillText(creditLines[i], width / 2 + offsetX, y + offsetY);
+                    }
+                    
+                    // Draw main credit text
+                    ctx.fillStyle = creditColor;
+                    ctx.fillText(creditLines[i], width / 2, y);
+                }
+            }
+            
+            generateTopActors() {
+                var firstNames = ['ALEX', 'MORGAN', 'CASEY', 'JORDAN', 'TAYLOR', 'RILEY'];
+                var lastNames = ['STONE', 'CROSS', 'STEEL', 'FOX', 'KNIGHT', 'HUNTER'];
+                
+                var actors = [];
+                for (var i = 0; i < 3; i++) {
+                    var first = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    var last = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    actors.push(first + ' ' + last);
+                }
+                return actors;
+            }
+            
+            analyzeAreaForTextColor(ctx, area) {
+                try {
+                    var imageData = ctx.getImageData(area.x, area.y, area.width, area.height);
+                    var data = imageData.data;
+                    
+                    var totalBrightness = 0;
+                    var sampleCount = 0;
+                    
+                    for (var i = 0; i < data.length; i += 200) {
+                        var r = data[i];
+                        var g = data[i + 1];
+                        var b = data[i + 2];
+                        
+                        var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+                        totalBrightness += brightness;
+                        sampleCount++;
+                    }
+                    
+                    var averageBrightness = totalBrightness / sampleCount;
+                    return averageBrightness < 128 ? '#FFFFFF' : '#000000';
+                } catch (error) {
+                    return '#FFFFFF'; // Default to white if analysis fails
+                }
+            }
+            
+            generateFakeCast() {
+                var firstNames = ['ALEX', 'MORGAN', 'CASEY', 'JORDAN', 'TAYLOR', 'RILEY', 'SAGE', 'DAKOTA', 'PHOENIX', 'RIVER', 'BLAKE', 'QUINN'];
+                var lastNames = ['STONE', 'CROSS', 'STEEL', 'FOX', 'KNIGHT', 'HUNTER', 'GREY', 'WOLF', 'STORM', 'CHASE', 'VALE', 'NORTH'];
+                
+                var cast = [];
+                for (var i = 0; i < 3; i++) {
+                    var first = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    var last = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    cast.push(first + ' ' + last);
+                }
+                return cast.join('  •  ');
+            }
+            
+            generateFakeStudio() {
+                var studios = ['MIDNIGHT', 'CRIMSON', 'NEBULA', 'SHADOW', 'ATOMIC', 'STELLAR', 'ECLIPSE', 'NOVA', 'QUANTUM', 'PHANTOM'];
+                return studios[Math.floor(Math.random() * studios.length)];
+            }
+            
+            generateFakeProducer() {
+                var names = ['M. BLACKWOOD', 'S. RAVENHILL', 'D. NIGHTFALL', 'A. STORMWIND', 'J. DARKMORE', 'R. SHADOWMERE'];
+                return names[Math.floor(Math.random() * names.length)];
+            }
+            
+            generateFakeComposer() {
+                var names = ['ECHO SYNTH', 'VOID HARMONICS', 'PULSE DIGITAL', 'NEON ORCHESTRA', 'CYBER STRINGS', 'DARK FREQUENCY'];
+                return names[Math.floor(Math.random() * names.length)];
+            }
+            
+            getRandomYear(decade) {
+                var startYear = parseInt(decade.substring(0, 4));
+                return startYear + Math.floor(Math.random() * 10);
+            }
+
+            updateInfo(concept) {
+                if (this.elements.decadeText) this.elements.decadeText.textContent = concept.decade || '-';
+                if (this.elements.genreText) this.elements.genreText.textContent = concept.genre || '-';
+                if (this.elements.titleText) this.elements.titleText.textContent = concept.title || '-';
+                if (this.elements.taglineText) this.elements.taglineText.textContent = concept.tagline || '-';
+                if (this.elements.synopsisText) this.elements.synopsisText.textContent = concept.synopsis || '-';
+                
+                if (this.elements.decadeText && this.elements.decadeText.parentElement) {
+                    this.elements.decadeText.parentElement.classList.add('fade-in');
+                }
+            }
+
+            showError(message) {
+                if (this.elements.errorText) this.elements.errorText.textContent = message;
+                if (this.elements.errorMessage) this.elements.errorMessage.classList.remove('hidden');
+                this.updateStatus('error', 'Error occurred');
+            }
+
+            hideError() {
+                if (this.elements.errorMessage) this.elements.errorMessage.classList.add('hidden');
+            }
+
+            setLoadingState(isLoading) {
+                this.isGenerating = isLoading;
+                this.elements.generateBtn.disabled = isLoading;
+                this.elements.saveBtn.disabled = isLoading || !this.elements.posterImage.src;
+                this.elements.shareBtn.disabled = isLoading || !this.elements.posterImage.src;
+                
+                if (isLoading) {
+                    this.elements.loader.classList.remove('hidden');
+                    this.elements.posterImage.classList.add('hidden');
+                    this.elements.btnText.textContent = 'Generating...';
+                    this.updateStatus('generating', 'Generating');
+                } else {
+                    this.elements.loader.classList.add('hidden');
+                    this.elements.posterImage.classList.remove('hidden');
+                    this.elements.btnText.textContent = 'Generate New Poster';
+                    this.updateStatus('ready', 'Ready');
+                    this.elements.saveBtn.disabled = false;
+                    this.elements.shareBtn.disabled = false;
+                }
+            }
+
+            updateStatus(type, text) {
+                if (!this.elements.statusIndicator) return;
+                
+                var indicator = this.elements.statusIndicator.querySelector('div');
+                var statusText = this.elements.statusIndicator.querySelector('span');
+                
+                if (indicator) {
+                    indicator.className = 'w-2 h-2 rounded-full mr-2 pulse-ring';
+                    
+                    switch(type) {
+                        case 'ready':
+                            indicator.classList.add('bg-green-500');
+                            break;
+                        case 'generating':
+                            indicator.classList.add('bg-blue-500');
+                            break;
+                        case 'error':
+                            indicator.classList.add('bg-red-500');
+                            break;
+                    }
+                }
+                
+                if (statusText) {
+                    statusText.textContent = text;
+                }
+            }
+
+            addToRecent(imageUrl, concept) {
+                this.recentPosters.unshift({ imageUrl: imageUrl, concept: concept, timestamp: Date.now() });
+                if (this.recentPosters.length > 6) {
+                    this.recentPosters.pop();
+                }
+                this.updateRecentDisplay();
+            }
+
+            updateRecentDisplay() {
+                var self = this;
+                this.elements.recentPosters.innerHTML = '';
+                this.recentPosters.forEach(function(poster, index) {
+                    var thumb = document.createElement('div');
+                    thumb.className = 'aspect-[2/3] bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all';
+                    thumb.innerHTML = '<img src="' + poster.imageUrl + '" alt="' + poster.concept.title + '" class="w-full h-full object-cover">';
+                    thumb.addEventListener('click', function() {
+                        self.loadPosterFromRecent(index);
+                    });
+                    self.elements.recentPosters.appendChild(thumb);
+                });
+            }
+
+            loadPosterFromRecent(index) {
+                var poster = this.recentPosters[index];
+                this.elements.posterImage.src = poster.imageUrl;
+                this.currentConcept = poster.concept;
+                this.updateInfo(poster.concept);
+                this.elements.posterImage.classList.remove('hidden');
+                this.elements.loader.classList.add('hidden');
+            }
+
+            async savePoster() {
+                if (!this.elements.posterImage.src) return;
+                
+                try {
+                    var link = document.createElement('a');
+                    var title = this.currentConcept && this.currentConcept.title ? this.currentConcept.title.replace(/\s+/g, '-') : 'generated';
+                    link.download = 'movie-poster-' + title + '.png';
+                    link.href = this.elements.posterImage.src;
+                    link.click();
+                } catch (error) {
+                    console.error('Error saving poster:', error);
+                    this.showError('Failed to save poster. Please try again.');
+                }
+            }
+
+            async sharePoster() {
+                if (!this.currentConcept) return;
+                
+                try {
+                    if (navigator.share) {
+                        await navigator.share({
+                            title: 'Movie Poster: ' + this.currentConcept.title,
+                            text: 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline,
+                            url: window.location.href
+                        });
+                    } else {
+                        var shareText = 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline;
+                        await navigator.clipboard.writeText(shareText);
+                        
+                        var originalText = this.elements.shareBtn.textContent;
+                        this.elements.shareBtn.textContent = 'Copied!';
+                        setTimeout(function() {
+                            this.elements.shareBtn.textContent = originalText;
+                        }.bind(this), 2000);
+                    }
+                } catch (error) {
+                    console.error('Error sharing poster:', error);
+                    this.showError('Failed to share poster. Please try again.');
+                }
+            }
+
+            toggleAutoGenerate() {
+                this.autoGenerate = !this.autoGenerate;
+                var toggle = this.elements.autoToggle;
+                var slider = toggle.querySelector('span');
+                
+                if (this.autoGenerate) {
+                    toggle.classList.add('bg-green-600');
+                    toggle.classList.remove('bg-gray-600');
+                    slider.classList.add('translate-x-6');
+                    slider.classList.remove('translate-x-1');
+                    this.startAutoTimer();
+                } else {
+                    toggle.classList.add('bg-gray-600');
+                    toggle.classList.remove('bg-green-600');
+                    slider.classList.add('translate-x-1');
+                    slider.classList.remove('translate-x-6');
+                    this.stopAutoTimer();
+                }
+            }
+
+            startAutoTimer() {
+                if (!this.autoGenerate) return;
+                
+                this.stopAutoTimer();
+                var timeLeft = 180;
+                var self = this;
+                
+                var updateTimer = function() {
+                    var minutes = Math.floor(timeLeft / 60);
+                    var seconds = timeLeft % 60;
+                    self.elements.autoTimer.textContent = 'Next: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                    
+                    if (timeLeft <= 0) {
+                        if (!self.isGenerating && self.autoGenerate) {
+                            self.handleGeneration();
+                        }risks
+                        self.startAutoTimer();
+                    } else {
+                        timeLeft--;
+                    }
+                };
+                
+                this.autoTimer = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+
+            stopAutoTimer() {
+                if (this.autoTimer) {
+                    clearInterval(this.autoTimer);
+                    this.autoTimer = null;
+                    this.elements.autoTimer.textContent = 'Next: Manual';
+                }
+            }
+
+            async handleGeneration() {
+                console.log('handleGeneration called');
+                
+                this.hideError();
+                this.setLoadingState(true);
+                this.updateInfo({ decade: '...', genre: '...', title: '...', tagline: '...', synopsis: '...' });
+
+                try {
+                    var concept = await this.generateMovieConcept();
+                    if (!concept) {
+                        this.setLoadingState(false);
+                        return;
+                    }
+                    
+                    this.currentConcept = concept;
+                    this.updateInfo(concept);
+
+                    var baseImageUrl = await this.generateImage(concept.visual_elements, concept);
+                    if (!baseImageUrl) {
+                        this.setLoadingState(false);
+                        return;
+                    }
+
+                    var finalImageUrl = await this.addTextToImage(baseImageUrl, concept);
+                    this.elements.posterImage.src = finalImageUrl;
+                    
+                    this.addToRecent(finalImageUrl, concept);
+                    
+                    this.generationCount++;
+                    this.elements.generationCounter.textContent = this.generationCount + ' poster' + (this.generationCount !== 1 ? 's' : '') + ' created';
+                    
+                } catch (error) {
+                    console.error("Error in generation process:", error);
+                    this.showError("Failed to process the poster. Please try again.");
+                } finally {
+                    this.setLoadingState(false);
+                    if (this.autoGenerate) {
+                        this.startAutoTimer();
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing PosterAI...');
+            window.posterAI = new PosterAI();
+        });
+    </script>
+</body>
+</html>
