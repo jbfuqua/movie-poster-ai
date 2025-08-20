@@ -204,15 +204,6 @@
                             <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Synopsis</label>
                             <p id="synopsis-text" class="text-sm text-gray-200 leading-relaxed">-</p>
                         </div>
-                        <div class="border-l-4 border-pink-500 pl-4">
-                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Instagram Caption</label>
-                            <div class="bg-gray-800 p-3 rounded-lg mt-2">
-                                <textarea id="instagram-caption" class="w-full bg-transparent text-xs text-gray-300 resize-none border-none outline-none" rows="6" readonly placeholder="Generate a poster to see Instagram caption..."></textarea>
-                                <button id="copy-caption-btn" class="mt-2 px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-xs transition-all disabled:opacity-50" disabled>
-                                    Copy Caption
-                                </button>
-                            </div>
-                        </div>
                     </div>
                     
                     <div id="error-message" class="hidden bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg mt-4">
@@ -279,8 +270,6 @@
                     titleText: document.getElementById('title-text'),
                     taglineText: document.getElementById('tagline-text'),
                     synopsisText: document.getElementById('synopsis-text'),
-                    instagramCaption: document.getElementById('instagram-caption'),
-                    copyCaptionBtn: document.getElementById('copy-caption-btn'),
                     
                     autoToggle: document.getElementById('auto-toggle'),
                     genreFilter: document.getElementById('genre-filter'),
@@ -334,10 +323,6 @@
                 
                 this.elements.eraFilter.addEventListener('change', function() {
                     if (!self.isGenerating) self.handleGeneration();
-                });
-                
-                this.elements.copyCaptionBtn.addEventListener('click', function() {
-                    self.copyInstagramCaption();
                 });
                 
                 console.log('Event listeners set up');
@@ -492,7 +477,7 @@
                         
                         self.renderPosterText(concept);
                         
-                        // Enhanced credits rendering
+                        // Force render credits
                         self.forceRenderCredits(self.ctx, self.elements.canvas.width, self.elements.canvas.height, concept);
                         
                         self.updateProgress('complete', 100);
@@ -842,117 +827,40 @@
                 }
                 return actors;
             }
-
-            generateProducers() {
-                var producerNames = [
-                    'SARAH BLOCKCHAIN', 'MIKE QUANTUM', 'ALEXANDRA NEURAL',
-                    'DAVID ALGORITHM', 'JENNIFER MATRIX', 'ROBERT CIPHER',
-                    'EMMA VERTEX', 'JAMES NEURAL', 'SOPHIA TENSOR'
-                ];
-                
-                // Usually 1-2 producers listed
-                var numProducers = Math.random() > 0.6 ? 2 : 1;
-                var selected = [];
-                
-                for (var i = 0; i < numProducers; i++) {
-                    var producer = producerNames[Math.floor(Math.random() * producerNames.length)];
-                    if (!selected.includes(producer)) {
-                        selected.push(producer);
-                    }
-                }
-                
-                return selected.join(' AND ');
-            }
-
-            generateStudio() {
-                var studios = [
-                    'NEURAL PICTURES', 'QUANTUM FILMS', 'MATRIX ENTERTAINMENT',
-                    'ALGORITHM STUDIOS', 'DIGITAL FORGE', 'SYNTHETIC CINEMA',
-                    'VERTEX PRODUCTIONS', 'CIPHER FILMS', 'NEXUS PICTURES',
-                    'BINARY STUDIOS', 'INFINITY ENTERTAINMENT', 'PIXEL FORGE'
-                ];
-                
-                return studios[Math.floor(Math.random() * studios.length)];
-            }
             
             forceRenderCredits(ctx, width, height, concept) {
-                console.log("ENHANCED CREDITS RENDERING STARTED");
+                console.log("FORCE RENDERING CREDITS");
                 
-                // Save context state
                 ctx.save();
+                ctx.globalAlpha = 1;
                 
-                // Much larger, more visible font size
-                var fontSize = Math.max(width / 45, 18); // Significantly larger than before
-                console.log("Credits font size:", fontSize);
-                
-                ctx.font = 'bold ' + fontSize + 'px Lato';
+                var fontSize = Math.max(width / 80, 12);
+                ctx.font = 'bold ' + fontSize + 'px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'alphabetic';
                 
-                // Generate authentic bottom credits (no duplicate starring)
-                var producers = this.generateProducers();
-                var studio = this.generateStudio();
-                var currentYear = new Date().getFullYear();
-                
                 var creditLines = [
-                    'DIRECTED BY ' + (concept.director || 'AI DIRECTOR').toUpperCase(),
-                    'PRODUCED BY ' + producers.toUpperCase(),
-                    'A ' + studio.toUpperCase() + ' FILM',
-                    (concept.rating || 'NR') + '  •  ' + (concept.runtime || 120) + ' MINUTES',
-                    '© ' + currentYear + ' ' + studio.split(' ')[0].toUpperCase() + ' ENTERTAINMENT'
+                    "MIDNIGHT PICTURES PRESENTS",
+                    "DIRECTED BY " + (concept.director || "A. FILMMAKER").toUpperCase(),
+                    "© 2024 MIDNIGHT ENTERTAINMENT"
                 ];
                 
-                // Enhanced spacing and positioning
-                var lineHeight = fontSize * 1.6; // More line spacing
-                var totalCreditsHeight = creditLines.length * lineHeight;
-                var startY = height - totalCreditsHeight - 40; // More margin from bottom
-                
-                console.log("Credits positioned at startY:", startY, "totalHeight:", totalCreditsHeight);
-                
-                // Strong outline for maximum visibility
-                var outlineWidth = Math.max(fontSize / 15, 3);
+                var lineHeight = fontSize * 1.5;
+                var startY = height - (creditLines.length * lineHeight) - 30;
                 
                 for (var i = 0; i < creditLines.length; i++) {
                     var y = startY + (i * lineHeight);
-                    var text = creditLines[i];
                     
-                    console.log("Drawing credit line", i, ":", text, "at y:", y);
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(creditLines[i], width / 2, y);
                     
-                    // Multiple outline passes for stronger contrast
-                    var outlineOffsets = [
-                        [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
-                        [-outlineWidth, 0], [outlineWidth, 0],
-                        [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
-                    ];
-                    
-                    // Black outline first
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-                    for (var j = 0; j < outlineOffsets.length; j++) {
-                        var offsetX = outlineOffsets[j][0];
-                        var offsetY = outlineOffsets[j][1];
-                        ctx.fillText(text, width / 2 + offsetX, y + offsetY);
-                    }
-                    
-                    // White text on top
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                    ctx.fillText(text, width / 2, y);
-                    
-                    // Additional shadow for depth
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                    ctx.shadowBlur = 8;
-                    ctx.shadowOffsetX = 2;
-                    ctx.shadowOffsetY = 2;
-                    ctx.fillText(text, width / 2, y);
-                    
-                    // Reset shadow
-                    ctx.shadowBlur = 0;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
+                    ctx.fillStyle = '#000000';
+                    ctx.fillText(creditLines[i], width / 2, y);
                 }
                 
-                // Restore context
                 ctx.restore();
-                console.log("ENHANCED CREDITS RENDERING COMPLETED");
+                console.log("CREDITS RENDERED");
             }
 
             updateInfo(concept) {
@@ -962,126 +870,8 @@
                 if (this.elements.taglineText) this.elements.taglineText.textContent = concept.tagline || '-';
                 if (this.elements.synopsisText) this.elements.synopsisText.textContent = concept.synopsis || '-';
                 
-                // Generate Instagram caption
-                this.generateInstagramCaption(concept);
-                
                 if (this.elements.decadeText && this.elements.decadeText.parentElement) {
                     this.elements.decadeText.parentElement.classList.add('fade-in');
-                }
-            }
-
-            generateInstagramCaption(concept) {
-                if (!concept.title) {
-                    this.elements.instagramCaption.value = '';
-                    this.elements.copyCaptionBtn.disabled = true;
-                    return;
-                }
-
-                // Create formatted Instagram caption
-                var caption = '';
-                
-                // Main text
-                caption += '🎬 New AI-generated movie poster alert! ✨\n\n';
-                caption += '📽️ "' + concept.title + '" (' + (concept.decade || 'Unknown Era') + ')\n';
-                caption += '🎭 ' + (concept.tagline || 'An unforgettable cinematic experience') + '\n\n';
-                
-                // Synopsis (shortened for Instagram)
-                var shortSynopsis = concept.synopsis ? 
-                    (concept.synopsis.length > 120 ? concept.synopsis.substring(0, 120) + '...' : concept.synopsis) :
-                    'A groundbreaking film that will leave you on the edge of your seat.';
-                caption += shortSynopsis + '\n\n';
-                
-                // Cast and crew
-                if (concept.cast && concept.cast.length > 0) {
-                    caption += '⭐ Starring: ' + concept.cast.slice(0, 2).join(', ') + '\n';
-                }
-                if (concept.director) {
-                    caption += '🎥 Directed by: ' + concept.director + '\n';
-                }
-                
-                caption += '\n🤖 Created with AI • What movie should I generate next?\n\n';
-                
-                // Hashtags - space separated for easy copying
-                var hashtags = this.generateHashtags(concept);
-                caption += hashtags;
-
-                this.elements.instagramCaption.value = caption;
-                this.elements.copyCaptionBtn.disabled = false;
-            }
-
-            generateHashtags(concept) {
-                var tags = [
-                    '#AIart', '#MoviePoster', '#GenerativeAI', '#FilmDesign',
-                    '#CinematicArt', '#ArtificialIntelligence', '#DigitalArt', '#MovieMagic'
-                ];
-                
-                // Add genre-specific tags
-                if (concept.genre) {
-                    var genreLower = concept.genre.toLowerCase();
-                    if (genreLower.includes('horror')) {
-                        tags.push('#Horror', '#ScaryMovies', '#HorrorArt');
-                    }
-                    if (genreLower.includes('sci-fi') || genreLower.includes('science fiction')) {
-                        tags.push('#SciFi', '#ScienceFiction', '#Futuristic');
-                    }
-                    if (genreLower.includes('thriller')) {
-                        tags.push('#Thriller', '#Suspense');
-                    }
-                    if (genreLower.includes('action')) {
-                        tags.push('#Action', '#ActionMovies');
-                    }
-                    if (genreLower.includes('drama')) {
-                        tags.push('#Drama');
-                    }
-                    if (genreLower.includes('comedy')) {
-                        tags.push('#Comedy');
-                    }
-                }
-                
-                // Add decade-specific tags
-                if (concept.decade) {
-                    tags.push('#' + concept.decade);
-                    if (concept.decade === '1980s') {
-                        tags.push('#Retro', '#80sAesthetic', '#Neon');
-                    }
-                    if (concept.decade === '1950s') {
-                        tags.push('#Vintage', '#Classic', '#FilmNoir');
-                    }
-                    if (concept.decade === '2020s') {
-                        tags.push('#Modern', '#Contemporary');
-                    }
-                }
-                
-                // Add creative tags
-                tags.push('#PosterDesign', '#ConceptArt', '#VisualEffects', '#CreativeAI');
-                tags.push('#Cinema', '#Entertainment', '#ArtLovers', '#DesignInspiration');
-                
-                // Shuffle and limit to ~30 tags (Instagram best practice)
-                var shuffled = tags.sort(() => 0.5 - Math.random()).slice(0, 30);
-                
-                return shuffled.join(' ');
-            }
-
-            async copyInstagramCaption() {
-                if (!this.elements.instagramCaption.value) return;
-                
-                try {
-                    await navigator.clipboard.writeText(this.elements.instagramCaption.value);
-                    
-                    var originalText = this.elements.copyCaptionBtn.textContent;
-                    this.elements.copyCaptionBtn.textContent = 'Copied! ✓';
-                    this.elements.copyCaptionBtn.classList.add('bg-green-600');
-                    this.elements.copyCaptionBtn.classList.remove('bg-pink-600');
-                    
-                    setTimeout(function() {
-                        this.elements.copyCaptionBtn.textContent = originalText;
-                        this.elements.copyCaptionBtn.classList.remove('bg-green-600');
-                        this.elements.copyCaptionBtn.classList.add('bg-pink-600');
-                    }.bind(this), 2000);
-                    
-                } catch (error) {
-                    console.error('Error copying caption:', error);
-                    this.showError('Failed to copy caption. Please try again.');
                 }
             }
 
