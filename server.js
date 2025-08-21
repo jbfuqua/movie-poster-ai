@@ -1,644 +1,513 @@
-// server.js - Enhanced Movie Poster AI Backend
-const express = require(‘express’);
-const cors = require(‘cors’);
-const fetch = require(‘node-fetch’);
-const path = require(‘path’);
-const { Readable } = require(‘stream’);
-const FormData = require(‘form-data’);
-const rateLimit = require(‘express-rate-limit’);
+<!DOCTYPE html>
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Environment variables with validation
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-if (!ANTHROPIC_API_KEY || !OPENAI_API_KEY) {
-console.error(‘❌ Missing required API keys in environment variables’);
-console.error(‘Required: ANTHROPIC_API_KEY, OPENAI_API_KEY’);
-process.exit(1);
-}
-
-// Rate limiting
-const limiter = rateLimit({
-windowMs: 15 * 60 * 1000, // 15 minutes
-max: 20, // limit each IP to 20 requests per windowMs
-message: { success: false, error: ‘Too many requests, please try again later.’ },
-standardHeaders: true,
-legacyHeaders: false,
-});
-
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: ‘10mb’ }));
-app.use(express.static(‘public’));
-app.use(’/api/’, limiter);
-
-// Simple in-memory cache
-const cache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-function getCached(key) {
-const item = cache.get(key);
-if (item && Date.now() - item.timestamp < CACHE_TTL) {
-return item.data;
-}
-cache.delete(key);
-return null;
-}
-
-function setCache(key, data) {
-cache.set(key, { data, timestamp: Date.now() });
-// Clean old entries periodically
-if (cache.size > 100) {
-const now = Date.now();
-for (const [k, v] of cache.entries()) {
-if (now - v.timestamp > CACHE_TTL) cache.delete(k);
-}
-}
-}
-
-// Enhanced prompt building helpers
-function getEraAuthenticMedium(decade) {
-const styles = {
-‘1950s’: ‘hand-painted gouache poster art, classic Hollywood illustration’,
-‘1960s’: ‘painted poster art, psychedelic illustration style’,
-‘1970s’: ‘airbrush poster art, painted illustration’,
-‘1980s’: ‘painted poster art with photographic elements’,
-‘1990s’: ‘professional movie poster photography’,
-‘2000s’: ‘digital photography, high-end commercial photography’,
-‘2010s’: ‘IMAX quality photography, modern cinematography’,
-‘2020s’: ‘ultra-high definition photography, premium commercial’
-};
-return styles[decade] || ‘professional movie poster art’;
-}
-
-function getCinematicTerms(genre) {
-const terms = {
-horror: ‘chiaroscuro lighting, practical effects makeup, gothic atmosphere’,
-‘sci-fi’: ‘volumetric lighting, metallic surfaces, lens flares, clean futuristic design’,
-thriller: ‘noir lighting, urban decay, dramatic shadows’,
-action: ‘dynamic composition, motion blur, explosive lighting’,
-drama: ‘natural portrait lighting, emotional depth’,
-comedy: ‘bright lighting, warm tones, approachable composition’
-};
-
-for (const [key, value] of Object.entries(terms)) {
-if (genre.toLowerCase().includes(key)) return value;
-}
-return ‘dramatic cinematic lighting’;
-}
-
-// Song recommendation database
-function getSongDatabase() {
-return {
-‘1950s’: {
-horror: [
-{ title: ‘Monster Mash’, artist: ‘Bobby Pickett’, reason: ‘Classic 50s horror novelty song with vintage charm’ },
-{ title: ‘Fever’, artist: ‘Peggy Lee’, reason: ‘Sultry jazz that captures 50s psychological thriller atmosphere’ },
-{ title: ‘Cry Me a River’, artist: ‘Julie London’, reason: ‘Dark, moody jazz perfect for film noir horror’ }
-],
-‘sci-fi’: [
-{ title: ‘Flying Purple People Eater’, artist: ‘Sheb Wooley’, reason: ‘Whimsical 50s sci-fi novelty hit’ },
-{ title: ‘Mr. Sandman’, artist: ‘The Chordettes’, reason: ‘Dreamy harmony with otherworldly quality’ },
-{ title: ‘Space Oddity’, artist: ‘David Bowie’, reason: ‘Timeless space exploration anthem’ }
-],
-default: [
-{ title: ‘Only You’, artist: ‘The Platters’, reason: ‘Quintessential 50s romance and drama’ },
-{ title: ‘Great Balls of Fire’, artist: ‘Jerry Lee Lewis’, reason: ‘High-energy 50s rock perfect for action scenes’ },
-{ title: ‘Blue Moon’, artist: ‘Billie Holiday’, reason: ‘Timeless jazz standard with emotional depth’ }
-]
-},
-‘1980s’: {
-horror: [
-{ title: ‘Thriller’, artist: ‘Michael Jackson’, reason: ‘The ultimate 80s horror anthem with iconic video’ },
-{ title: ‘Somebody's Watching Me’, artist: ‘Rockwell’, reason: ‘Paranoid 80s synth-pop perfect for psychological horror’ },
-{ title: ‘Love Song for a Vampire’, artist: ‘Annie Lennox’, reason: ‘Gothic new wave with dark romantic themes’ }
-],
-‘sci-fi’: [
-{ title: ‘Blue Monday’, artist: ‘New Order’, reason: ‘Futuristic synth-pop defining 80s electronic sound’ },
-{ title: ‘Cars’, artist: ‘Gary Numan’, reason: ‘Robotic new wave about technology and isolation’ },
-{ title: ‘Sweet Dreams’, artist: ‘Eurythmics’, reason: ‘Synth-pop classic with dystopian undertones’ }
-],
-default: [
-{ title: ‘Don't Stop Believin'’, artist: ‘Journey’, reason: ‘Anthemic 80s rock with emotional crescendo’ },
-{ title: ‘Take On Me’, artist: ‘a-ha’, reason: ‘Upbeat synth-pop with innovative production’ },
-{ title: ‘Every Breath You Take’, artist: ‘The Police’, reason: ‘Haunting pop with dark surveillance themes’ }
-]
-},
-‘2020s’: {
-horror: [
-{ title: ‘bad guy’, artist: ‘Billie Eilish’, reason: ‘Dark pop with minimalist horror aesthetic’ },
-{ title: ‘Therefore I Am’, artist: ‘Billie Eilish’, reason: ‘Menacing pop with psychological edge’ },
-{ title: ‘Bury a Friend’, artist: ‘Billie Eilish’, reason: ‘Haunting electropop perfect for modern horror’ }
-],
-‘sci-fi’: [
-{ title: ‘Blinding Lights’, artist: ‘The Weeknd’, reason: ‘Synthwave hit with retro-futuristic sound’ },
-{ title: ‘Levitating’, artist: ‘Dua Lipa’, reason: ‘Disco-pop with space-age production’ },
-{ title: ‘Physical’, artist: ‘Dua Lipa’, reason: ‘Electronic dance perfect for action sequences’ }
-],
-default: [
-{ title: ‘drivers license’, artist: ‘Olivia Rodrigo’, reason: ‘Emotional ballad defining 2020s storytelling’ },
-{ title: ‘Good 4 U’, artist: ‘Olivia Rodrigo’, reason: ‘Pop-punk energy perfect for dramatic moments’ },
-{ title: ‘Industry Baby’, artist: ‘Lil Nas X’, reason: ‘Genre-blending hit with bold production’ }
-]
-}
-// Add more decades as needed
-};
-}
-
-function generateSongRecommendation(concept) {
-const database = getSongDatabase();
-const decade = concept.decade || ‘2020s’;
-const genre = (concept.genre || ‘’).toLowerCase();
-
-// Get songs for decade
-const decadeSongs = database[decade] || database[‘2020s’];
-
-// Determine genre category
-let genreCategory = ‘default’;
-if (genre.includes(‘horror’)) genreCategory = ‘horror’;
-else if (genre.includes(‘sci-fi’)) genreCategory = ‘sci-fi’;
-
-// Get genre songs with fallback
-const genreSongs = decadeSongs[genreCategory] || decadeSongs[‘default’] || database[‘2020s’][‘default’];
-
-// Select random song
-const selectedSong = genreSongs[Math.floor(Math.random() * genreSongs.length)];
-
-// Add context to reason
-let contextReason = selectedSong.reason;
-if (concept.title) {
-contextReason += ` - Perfect for "${concept.title}"`;
-}
-if (concept.decade && concept.genre) {
-contextReason += `, captures ${concept.decade} ${concept.genre.toLowerCase()} atmosphere`;
-}
-
-return {
-title: selectedSong.title,
-artist: selectedSong.artist,
-reason: contextReason
-};
-}
-
-// –––––––– Concept Generation (Claude) ––––––––
-app.post(’/api/generate-concept’, async (req, res) => {
-try {
-console.log(‘🎬 Concept generation request:’, req.body);
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Generative Movie Poster AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300;400;700&family=Montserrat:wght@400;700;900&family=Oswald:wght@400;700&family=Poppins:wght@400;600;700&family=Orbitron:wght@700;900&family=Cinzel:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Lato', sans-serif; background: linear-gradient(135deg,#0c0c0c 0%,#1a1a2e 50%,#16213e 100%); }
+    .font-oswald{font-family:'Oswald',sans-serif}.font-bebas{font-family:'Bebas Neue',sans-serif}
+    .font-montserrat{font-family:'Montserrat',sans-serif}.font-poppins{font-family:'Poppins',sans-serif}
+    .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1)}
+    .poster-shadow{box-shadow:0 10px 40px rgba(0,0,0,.8)}
+    .gradient-text{background:linear-gradient(45deg,#3b82f6,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .custom-scrollbar::-webkit-scrollbar{width:6px}.custom-scrollbar::-webkit-scrollbar-thumb{background:rgba(59,130,246,.6);border-radius:3px}
+  </style>
+</head>
+<body class="text-gray-200 min-h-screen p-4 sm:p-6 lg:p-8">
+  <div class="w-full max-w-7xl mx-auto">
+    <header class="text-center mb-8">
+      <h1 class="text-5xl sm:text-7xl font-bebas tracking-wider gradient-text mb-2">Generative Movie Poster AI</h1>
+      <p class="text-gray-400">Cinematic one-sheets, generated with AI</p>
+      <div class="flex justify-center gap-4 text-sm text-gray-500 mt-2">
+        <span id="status">Ready</span>
+        <span>•</span>
+        <span id="count">0 posters created</span>
+      </div>
+    </header>
 
 ```
-const { genreFilter = 'any', eraFilter = 'any' } = req.body;
+<main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+  <!-- Poster -->
+  <section class="xl:col-span-3 glass p-6 rounded-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-montserrat font-bold">Current Generation</h2>
+      <div class="flex gap-2">
+        <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded disabled:opacity-50" disabled>Save</button>
+        <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded disabled:opacity-50" disabled>Share</button>
+      </div>
+    </div>
 
-// Check cache first
-const cacheKey = `concept-${genreFilter}-${eraFilter}`;
-const cached = getCached(cacheKey);
-if (cached) {
-  console.log('📦 Returning cached concept');
-  return res.json(cached);
-}
+    <div id="poster-wrap" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-shadow relative">
+      <div id="loader" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center z-10 hidden">
+        <div class="text-center">
+          <svg class="w-14 h-14 mx-auto mb-3 animate-spin text-gray-600" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+          <p id="phase" class="text-blue-400">Generating…</p>
+        </div>
+      </div>
+      <img id="poster-img" alt="Generated poster" class="w-full h-full object-cover hidden" />
+    </div>
+  </section>
 
-const genreMap = {
-  horror: '"Horror"',
-  'sci-fi': '"Sci-Fi"',
-  fusion: 'a creative fusion of Horror and Sci-Fi'
-};
+  <!-- Controls + Details -->
+  <aside class="xl:col-span-1 space-y-6">
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Controls</h3>
+      <button id="gen-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl">Generate Poster</button>
 
-const decades = ['1950s','1960s','1970s','1980s','1990s','2000s','2010s','2020s'];
-const randomDecade = decades[Math.floor(Math.random() * decades.length)];
-const eraConstraint = eraFilter === 'any' ? `MUST be "${randomDecade}"` : `MUST be "${eraFilter}"`;
-const genreConstraint = genreFilter === 'any'
-  ? `The genre MUST be 'Horror', 'Sci-Fi', or a creative fusion of both`
-  : `The genre MUST be ${genreMap[genreFilter]}`;
+      <div class="mt-4">
+        <label class="text-sm text-gray-300">Genre</label>
+        <select id="genre" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="any">Any</option>
+          <option value="horror">Horror</option>
+          <option value="sci-fi">Sci-Fi</option>
+          <option value="fusion">Sci-Fi Horror</option>
+        </select>
+      </div>
 
-const prompt = `Return ONLY valid JSON with keys "decade","genre","title","tagline","synopsis","visual_elements","cast","director".
+      <div class="mt-3">
+        <label class="text-sm text-gray-300">Era</label>
+        <select id="era" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="any">Any</option>
+          <option>1950s</option><option>1960s</option><option>1970s</option><option>1980s</option>
+          <option>1990s</option><option>2000s</option><option>2010s</option><option>2020s</option>
+        </select>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm text-gray-300">Art Style</label>
+        <select id="style" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="authentic">Era Authentic</option>
+          <option value="b-movie">B-Movie Exaggerated</option>
+          <option value="photo">Modern Photography</option>
+          <option value="painted">Classic Painted</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="glass p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Movie Details</h3>
+      <div class="space-y-3 text-sm">
+        <p><span class="text-gray-400">Era:</span> <span id="d-decade">—</span></p>
+        <p><span class="text-gray-400">Genre:</span> <span id="d-genre">—</span></p>
+        <p class="text-yellow-400 font-bebas text-2xl leading-tight" id="d-title">—</p>
+        <p class="italic text-gray-300" id="d-tagline">—</p>
+        <p class="text-gray-200" id="d-synopsis">—</p>
+      </div>
+    </div>
+
+    <!-- Song Recommendation -->
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">🎵 Soundtrack Rec</h3>
+      <div id="song-container" class="space-y-2">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">🎵</span>
+          <div class="flex-1">
+            <p id="song-title" class="text-sm font-medium text-white">—</p>
+            <p id="song-artist" class="text-xs text-gray-400">—</p>
+          </div>
+        </div>
+        <p id="song-reason" class="text-xs text-gray-300 italic">—</p>
+        <button id="copy-song-btn" class="w-full mt-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs transition-all disabled:opacity-50" disabled>
+          Copy Song Info
+        </button>
+      </div>
+    </div>
+
+    <!-- Instagram Caption -->
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">📱 Instagram Caption</h3>
+      <div class="bg-gray-800 p-3 rounded-lg">
+        <textarea id="instagram-caption" class="w-full bg-transparent text-xs text-gray-300 resize-none border-none outline-none" rows="6" readonly placeholder="Generate a poster to see Instagram caption..."></textarea>
+        <button id="copy-caption-btn" class="w-full mt-2 px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-xs transition-all disabled:opacity-50" disabled>
+          Copy Caption
+        </button>
+      </div>
+    </div>
+
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Recent</h3>
+      <div id="recent" class="grid grid-cols-2 gap-2"></div>
+    </div>
+  </aside>
+</main>
 ```
 
-STRICT RULES:
+  </div>
 
-- ${eraConstraint}
-- ${genreConstraint}
-- Title: short and striking (2-4 words max)
-- “visual_elements”: 1 focal subject + 2–3 concise scene elements
-- Cast: array of 3-4 fictional actor names
-- Director: one fictional director name
-- Synopsis: 1-2 sentences max
+<canvas id="canvas" class="hidden"></canvas>
 
-EXAMPLE FORMAT:
-{
-“decade”:“1980s”,
-“genre”:“Sci-Fi Horror”,
-“title”:“Neon Parallax”,
-“tagline”:“The city blinked—and forgot you existed.”,
-“synopsis”:“A detective discovers reality glitches in a neon-soaked city where digital surveillance has merged with human consciousness.”,
-“visual_elements”:“lone detective silhouette; rain-slicked neon streets; towering digital billboards; distant city lights”,
-“cast”:[“Mira Reeves”,“Dakota Chen”,“Alexander Thorne”],
-“director”:“Cameron Reed Sullivan”
-}
+  <script>
+    // ---------- Simple state ----------
+    const els = {
+      genBtn: document.getElementById('gen-btn'),
+      saveBtn: document.getElementById('save-btn'),
+      shareBtn: document.getElementById('share-btn'),
+      posterImg: document.getElementById('poster-img'),
+      loader: document.getElementById('loader'),
+      phase: document.getElementById('phase'),
+      status: document.getElementById('status'),
+      count: document.getElementById('count'),
+      genre: document.getElementById('genre'),
+      era: document.getElementById('era'),
+      style: document.getElementById('style'),
+      dDecade: document.getElementById('d-decade'),
+      dGenre: document.getElementById('d-genre'),
+      dTitle: document.getElementById('d-title'),
+      dTagline: document.getElementById('d-tagline'),
+      dSynopsis: document.getElementById('d-synopsis'),
+      songTitle: document.getElementById('song-title'),
+      songArtist: document.getElementById('song-artist'),
+      songReason: document.getElementById('song-reason'),
+      copySongBtn: document.getElementById('copy-song-btn'),
+      instagramCaption: document.getElementById('instagram-caption'),
+      copyCaptionBtn: document.getElementById('copy-caption-btn'),
+      recent: document.getElementById('recent'),
+      canvas: document.getElementById('canvas'),
+    };
+    const ctx = els.canvas.getContext('2d');
+    let currentConcept = null;
+    let generationCount = 0;
 
-Return ONLY the JSON, no other text.`;
+    // ---------- UI helpers ----------
+    function setLoading(on, phaseText = 'Generating…') {
+      els.loader.classList.toggle('hidden', !on);
+      els.phase.textContent = phaseText;
+      els.status.textContent = on ? 'Generating' : 'Ready';
+      els.genBtn.disabled = on;
+      els.saveBtn.disabled = on;
+      els.shareBtn.disabled = on;
+      if (!on) { els.saveBtn.disabled = !els.posterImg.src; els.shareBtn.disabled = !els.posterImg.src; }
+    }
 
-```
-console.log('🤖 Calling Anthropic API...');
+    function updateDetails(c) {
+      els.dDecade.textContent = c.decade || '—';
+      els.dGenre.textContent = c.genre || '—';
+      els.dTitle.textContent = c.title || '—';
+      els.dTagline.textContent = c.tagline || '—';
+      els.dSynopsis.textContent = c.synopsis || '—';
+    }
 
-// Enhanced error handling for Vercel
-const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-api-key': ANTHROPIC_API_KEY,
-    'anthropic-version': '2023-06-01',
-    'User-Agent': 'MoviePosterAI/1.0'
-  },
-  body: JSON.stringify({
-    model: 'claude-3-5-sonnet-20241022', // Updated to latest model
-    max_tokens: 1000,
-    temperature: 0.8,
-    messages: [
-      {
-        role: 'user',
-        content: [{ type: 'text', text: prompt }]
+    function addGradientPlates() {
+      const w = els.canvas.width, h = els.canvas.height;
+      // top
+      let gTop = ctx.createLinearGradient(0,0,0,h*0.18);
+      gTop.addColorStop(0,'rgba(0,0,0,0.45)'); gTop.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = gTop; ctx.fillRect(0,0,w,h*0.18);
+      // bottom
+      let gBot = ctx.createLinearGradient(0,h,0,h*0.82);
+      gBot.addColorStop(0,'rgba(0,0,0,0.60)'); gBot.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = gBot; ctx.fillRect(0,h*0.82,w,h*0.18);
+    }
+
+    // Smart crop tall (1024x1792) → 2:3 window focusing on subject density
+    function smartCropToTwoThirds(img) {
+      const targetW = 1024, targetH = Math.floor(targetW * 1.5); // 2:3
+      const step = 32;
+      let best = { y: 0, score: -Infinity };
+
+      // Draw the source to a temp canvas to sample pixels
+      const t = document.createElement('canvas'), tc = t.getContext('2d');
+      t.width = img.width; t.height = img.height; tc.drawImage(img,0,0);
+
+      for (let y=0; y<=img.height-targetH; y+=step) {
+        const data = tc.getImageData(0, y + Math.floor(targetH*0.25), targetW, Math.floor(targetH*0.5)).data; // mid-band
+        // score = edge density proxy using brightness variance
+        let sum=0, sum2=0, n=0;
+        for (let i=0;i<data.length;i+=16){ // sample sparsely
+          const r=data[i], g=data[i+1], b=data[i+2];
+          const br = 0.299*r + 0.587*g + 0.114*b;
+          sum += br; sum2 += br*br; n++;
+        }
+        const mean = sum/n, variance = sum2/n - mean*mean;
+        const score = variance;
+        if (score > best.score) best = { y, score };
       }
-    ]
-  }),
-  timeout: 30000 // 30 second timeout
-});
 
-if (!anthropicResponse.ok) {
-  const errorText = await anthropicResponse.text();
-  console.error('❌ Anthropic API error:', anthropicResponse.status, errorText);
-  
-  // Provide detailed error for debugging on Vercel
-  return res.status(anthropicResponse.status).json({
-    success: false,
-    error: `Anthropic API error ${anthropicResponse.status}`,
-    details: errorText,
-    hasApiKey: !!ANTHROPIC_API_KEY,
-    timestamp: new Date().toISOString()
-  });
-}
+      els.canvas.width = targetW; els.canvas.height = targetH;
+      ctx.clearRect(0,0,targetW,targetH);
+      ctx.drawImage(img, 0, best.y, targetW, targetH, 0, 0, targetW, targetH);
+    }
 
-const anthropicData = await anthropicResponse.json();
-console.log('✅ Anthropic response received');
+    function drawTitleAndCredits(concept) {
+      const w = els.canvas.width, h = els.canvas.height;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-const text = anthropicData?.content?.[0]?.text || '';
-if (!text) {
-  console.error('❌ No text in Anthropic response:', anthropicData);
-  return res.status(502).json({
-    success: false,
-    error: 'No content returned from Anthropic',
-    response: anthropicData
-  });
-}
+      // Title zone (top third)
+      const title = (concept.title || '').toUpperCase();
+      if (title) {
+        let fontSize = Math.min(120, w/8); ctx.font = `bold ${fontSize}px Bebas Neue`;
+        while (ctx.measureText(title).width > w*0.88) { fontSize -= 2; ctx.font = `bold ${fontSize}px Bebas Neue`; }
+        
+        // Enhanced professional text rendering
+        ctx.fillStyle = '#000'; ctx.globalAlpha = .8;
+        ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = Math.max(fontSize/6,10);
+        ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3;
+        
+        // Multiple passes for depth
+        ctx.fillStyle = '#fff'; ctx.globalAlpha = 1;
+        ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.lineWidth = Math.max(fontSize/20, 2);
+        ctx.strokeText(title, w/2, h*0.15);
+        ctx.fillText(title, w/2, h*0.15);
+        
+        // Add subtle highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillText(title, w/2, h*0.15 - 1);
+        
+        ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+      }
 
-// Extract JSON from response
-const jsonMatch = text.match(/\{[\s\S]*\}/);
-if (!jsonMatch) {
-  console.error('❌ No JSON found in response:', text);
-  return res.status(502).json({
-    success: false,
-    error: 'No parsable JSON in Anthropic response',
-    responseText: text
-  });
-}
+      // Tagline (below title)
+      if (concept.tagline) {
+        const tagline = concept.tagline;
+        let fs = Math.max(20, Math.floor(w/35)); ctx.font = `italic ${fs}px Lato`;
+        ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.strokeStyle = 'rgba(0,0,0,.85)';
+        ctx.lineWidth = 3; ctx.strokeText(tagline, w/2, h*0.24); ctx.fillText(tagline, w/2, h*0.24);
+      }
 
-let concept;
-try {
-  concept = JSON.parse(jsonMatch[0]);
-  console.log('✅ Concept parsed successfully:', concept.title);
-} catch (parseError) {
-  console.error('❌ JSON parse error:', parseError, jsonMatch[0]);
-  return res.status(502).json({
-    success: false,
-    error: 'Failed to parse JSON from Anthropic',
-    jsonString: jsonMatch[0],
-    parseError: parseError.message
-  });
-}
+      // Enhanced bottom credits
+      const credits = [
+        concept.cast && concept.cast.length ? concept.cast.slice(0,3).join('    ').toUpperCase() : '',
+        concept.director ? `DIRECTED BY ${concept.director.toUpperCase()}` : '',
+        'A SYNTHETIC CINEMA FILM', 
+        `${concept.rating || 'NR'}  •  ${concept.runtime || 120} MINUTES`, 
+        `© ${(new Date).getFullYear()} SYNTHETIC ENTERTAINMENT`
+      ].filter(Boolean);
 
-// Validate required fields
-const required = ['decade', 'genre', 'title', 'visual_elements'];
-const missing = required.filter(field => !concept[field]);
-if (missing.length > 0) {
-  console.error('❌ Missing required fields:', missing);
-  return res.status(502).json({
-    success: false,
-    error: `Missing required fields: ${missing.join(', ')}`,
-    concept
-  });
-}
+      let fs = Math.max(16, Math.floor(w/45)); ctx.font = `bold ${fs}px Lato`;
+      ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.strokeStyle = 'rgba(0,0,0,.9)'; ctx.lineWidth = 3;
+      const startY = h*0.86, lh = fs*1.6;
+      
+      credits.forEach((line,i)=>{
+        const y = startY + i*lh;
+        ctx.strokeText(line,w/2,y);
+        ctx.fillText(line,w/2,y);
+      });
+    }
 
-const result = { success: true, concept };
-setCache(cacheKey, result);
+    // Song recommendation
+    async function fetchSongRecommendation(concept) {
+      try {
+        const response = await fetch('/api/get-song-recommendation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept })
+        });
 
-console.log('🎉 Concept generation successful');
-return res.json(result);
-```
+        if (!response.ok) throw new Error('Song request failed');
+        
+        const result = await response.json();
+        const song = result.song;
+        
+        els.songTitle.textContent = song.title;
+        els.songArtist.textContent = song.artist;
+        els.songReason.textContent = song.reason;
+        els.copySongBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Song recommendation error:', error);
+        els.songTitle.textContent = 'Unable to load';
+        els.songArtist.textContent = 'recommendation';
+        els.songReason.textContent = 'Try generating again';
+        els.copySongBtn.disabled = true;
+      }
+    }
 
-} catch (error) {
-console.error(‘💥 Concept generation exception:’, error);
-return res.status(500).json({
-success: false,
-error: error.message || ‘Failed to generate movie concept’,
-stack: process.env.NODE_ENV === ‘development’ ? error.stack : undefined,
-hasApiKey: !!ANTHROPIC_API_KEY
-});
-}
-});
+    // Instagram caption
+    async function fetchInstagramCaption(concept) {
+      try {
+        const response = await fetch('/api/generate-instagram-caption', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept })
+        });
 
-// –––––––– Image Generation (DALL-E) ––––––––
-function createPosterPrompt(concept, visualElements) {
-const genre = (concept.genre || ‘’).toLowerCase();
-const decade = concept.decade || ‘1980s’;
-const artStyle = concept.artStyle || ‘authentic’;
+        if (!response.ok) throw new Error('Caption request failed');
+        
+        const result = await response.json();
+        els.instagramCaption.value = result.caption;
+        els.copyCaptionBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Instagram caption error:', error);
+        els.instagramCaption.value = 'Unable to generate caption. Try again.';
+        els.copyCaptionBtn.disabled = true;
+      }
+    }
 
-const medium =
-artStyle === ‘painted’ ? ‘hand-painted movie poster, visible brushwork, artistic illustration’ :
-artStyle === ‘b-movie’ ? ‘exaggerated B-movie poster art, pulp magazine style, over-the-top dramatic, sensationalized imagery’ :
-artStyle === ‘photo’ ? ‘cinematic portrait photograph, professional movie lighting’ :
-artStyle === ‘authentic’ ? getEraAuthenticMedium(decade) :
-‘era-authentic movie poster art’;
+    async function handleGenerate() {
+      try {
+        setLoading(true,'Concept…');
+        
+        // 1) Concept
+        const cRes = await fetch('/api/generate-concept', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ genreFilter: els.genre.value, eraFilter: els.era.value })
+        });
 
-const cinematicTerms = getCinematicTerms(genre);
+        if (!cRes.ok) {
+          const err = await cRes.json().catch(() => ({}));
+          throw new Error(err.error || `Concept request failed (${cRes.status})`);
+        }
+        
+        const cJson = await cRes.json();
+        currentConcept = cJson.concept || {};
+        currentConcept.artStyle = els.style.value;
+        updateDetails(currentConcept);
 
-const eraCue = {
-‘1950s’: ‘vintage film grain, classic Hollywood glamour’,
-‘1960s’: ‘retro palettes, psychedelic color schemes’,
-‘1970s’: ‘earth tones, gritty realism’,
-‘1980s’: ‘high contrast rim lighting, neon accents’,
-‘1990s’: ‘MTV aesthetics, bold composition’,
-‘2000s’: ‘digital clarity, modern color grading’,
-‘2010s’: ‘IMAX quality, contemporary cinematography’,
-‘2020s’: ‘ultra-high definition, premium production value’
-}[decade] || ‘modern cinematic style’;
+        // Generate song recommendation and Instagram caption in parallel
+        fetchSongRecommendation(currentConcept);
+        fetchInstagramCaption(currentConcept);
 
-const beats = (visualElements || ‘’).replace(/\s+/g,’ ’).slice(0, 180);
-const controls = ‘single cohesive scene, strong focal subject, negative space at top and bottom for title placement, no text, no letters, no watermarks, no logos, no borders’;
+        // 2) Image
+        setLoading(true,'Artwork…');
+        const iRes = await fetch('/api/generate-image', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            concept: currentConcept,
+            visualElements: currentConcept.visual_elements
+          })
+        });
+        
+        if (!iRes.ok) {
+          const err = await iRes.json().catch(() => ({}));
+          throw new Error(err.error || 'Image generation failed');
+        }
+        
+        const iJson = await iRes.json();
+        const base64 = iJson.imageUrl;
 
-return `${medium}. ${cinematicTerms}. ${beats}. ${eraCue}. ${controls}.`.slice(0, 400);
-}
+        // 3) Compose: smart-crop to 2:3, gradient plates, then text
+        setLoading(true,'Typography…');
+        const img = new Image();
+        img.onload = () => {
+          smartCropToTwoThirds(img);
+          addGradientPlates();
+          drawTitleAndCredits(currentConcept);
+          const out = els.canvas.toDataURL('image/png');
+          els.posterImg.src = out;
+          els.posterImg.classList.remove('hidden');
+          addRecent(out);
+          generationCount++; 
+          els.count.textContent = `${generationCount} poster${generationCount===1?'':'s'} created`;
+          setLoading(false);
+        };
+        img.onerror = () => { 
+          setLoading(false); 
+          alert('Failed to load generated image'); 
+        };
+        img.src = base64;
+        
+      } catch (e) {
+        setLoading(false);
+        console.error('Generation error:', e);
+        alert(`Error: ${e.message}`);
+      }
+    }
 
-app.post(’/api/generate-image’, async (req, res) => {
-try {
-console.log(‘🎨 Image generation request’);
+    function addRecent(url) {
+      const cell = document.createElement('div');
+      cell.className = 'aspect-[2/3] bg-gray-700 rounded overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 transition';
+      cell.innerHTML = `<img src="${url}" class="w-full h-full object-cover" />`;
+      cell.onclick = ()=>{ els.posterImg.src = url; els.posterImg.classList.remove('hidden'); };
+      els.recent.prepend(cell);
+      while (els.recent.children.length > 6) els.recent.lastChild.remove();
+      els.saveBtn.disabled = false; els.shareBtn.disabled = false;
+    }
 
-```
-const { visualElements = '', concept = {} } = req.body;
+    // Copy functions
+    async function copySongInfo() {
+      if (!els.songTitle.textContent || els.songTitle.textContent === '—') return;
+      
+      const songInfo = `🎵 Soundtrack Recommendation:\n"${els.songTitle.textContent}" by ${els.songArtist.textContent}\n\n${els.songReason.textContent}`;
+      
+      try {
+        await navigator.clipboard.writeText(songInfo);
+        const originalText = els.copySongBtn.textContent;
+        els.copySongBtn.textContent = 'Copied! ✓';
+        els.copySongBtn.classList.add('bg-green-600');
+        els.copySongBtn.classList.remove('bg-indigo-600');
+        
+        setTimeout(() => {
+          els.copySongBtn.textContent = originalText;
+          els.copySongBtn.classList.remove('bg-green-600');
+          els.copySongBtn.classList.add('bg-indigo-600');
+        }, 2000);
+      } catch (error) {
+        console.error('Error copying song info:', error);
+        alert('Failed to copy song info');
+      }
+    }
 
-// Check cache
-const cacheKey = `image-${JSON.stringify({concept, visualElements})}`;
-const cached = getCached(cacheKey);
-if (cached) {
-  console.log('📦 Returning cached image');
-  return res.json(cached);
-}
+    async function copyInstagramCaption() {
+      if (!els.instagramCaption.value) return;
+      
+      try {
+        await navigator.clipboard.writeText(els.instagramCaption.value);
+        const originalText = els.copyCaptionBtn.textContent;
+        els.copyCaptionBtn.textContent = 'Copied! ✓';
+        els.copyCaptionBtn.classList.add('bg-green-600');
+        els.copyCaptionBtn.classList.remove('bg-pink-600');
+        
+        setTimeout(() => {
+          els.copyCaptionBtn.textContent = originalText;
+          els.copyCaptionBtn.classList.remove('bg-green-600');
+          els.copyCaptionBtn.classList.add('bg-pink-600');
+        }, 2000);
+      } catch (error) {
+        console.error('Error copying caption:', error);
+        alert('Failed to copy caption');
+      }
+    }
 
-const prompt = createPosterPrompt(concept, visualElements);
-console.log('🎯 Generated prompt:', prompt);
+    // Event listeners
+    els.genBtn.addEventListener('click', handleGenerate);
+    els.copySongBtn.addEventListener('click', copySongInfo);
+    els.copyCaptionBtn.addEventListener('click', copyInstagramCaption);
+    
+    els.saveBtn.addEventListener('click', ()=>{
+      if (!els.posterImg.src) return;
+      const a = document.createElement('a');
+      const t = currentConcept?.title ? currentConcept.title.replace(/\s+/g,'-') : 'poster';
+      a.download = `poster-${t}.png`; a.href = els.posterImg.src; a.click();
+    });
+    
+    els.shareBtn.addEventListener('click', async ()=>{
+      if (!els.posterImg.src) return;
+      const text = `AI poster: "${currentConcept?.title||''}" — ${currentConcept?.tagline||''}`;
+      if (navigator.share) { 
+        try { 
+          await navigator.share({ 
+            title: 'Movie Poster', 
+            text, 
+            url: location.href 
+          }); 
+        } catch{} 
+      } else { 
+        await navigator.clipboard.writeText(text); 
+        alert('Poster info copied to clipboard!');
+      }
+    });
 
-const requestBody = {
-  model: 'dall-e-3',
-  prompt,
-  size: '1024x1792',
-  quality: 'hd',
-  style: 'vivid',
-  response_format: 'b64_json'
-};
+    // Generate on filter change
+    els.genre.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
+    });
+    
+    els.era.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
+    });
+    
+    els.style.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
+    });
+  </script>
 
-console.log('🤖 Calling OpenAI API...');
-
-const response = await fetch('https://api.openai.com/v1/images/generations', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${OPENAI_API_KEY}`,
-    'Content-Type': 'application/json',
-    'User-Agent': 'MoviePosterAI/1.0'
-  },
-  body: JSON.stringify(requestBody),
-  timeout: 60000 // 60 second timeout for image generation
-});
-
-if (!response.ok) {
-  const errorText = await response.text();
-  console.error('❌ OpenAI API error:', response.status, errorText);
-  throw new Error(`OpenAI API error ${response.status}: ${errorText}`);
-}
-
-const result = await response.json();
-console.log('✅ Image generated successfully');
-
-let b64 = result.data?.[0]?.b64_json;
-const url = result.data?.[0]?.url;
-
-if (!b64 && url) {
-  console.log('📥 Fetching image from URL...');
-  const imgResponse = await fetch(url);
-  if (!imgResponse.ok) throw new Error(`Image fetch failed: ${imgResponse.status}`);
-  const buffer = await imgResponse.buffer();
-  b64 = buffer.toString('base64');
-}
-
-if (!b64) {
-  throw new Error('No image data returned from OpenAI');
-}
-
-const responseData = {
-  success: true,
-  imageUrl: `data:image/png;base64,${b64}`,
-  originalUrl: url,
-  revisedPrompt: result.data?.[0]?.revised_prompt
-};
-
-setCache(cacheKey, responseData);
-console.log('🎉 Image generation successful');
-
-res.json(responseData);
-```
-
-} catch (error) {
-console.error(‘💥 Image generation exception:’, error);
-res.status(500).json({
-success: false,
-error: error.message || ‘Failed to generate image’,
-hasApiKey: !!OPENAI_API_KEY
-});
-}
-});
-
-// –––––––– Song Recommendation ––––––––
-app.post(’/api/get-song-recommendation’, async (req, res) => {
-try {
-const { concept } = req.body;
-
-```
-if (!concept) {
-  return res.status(400).json({
-    success: false,
-    error: 'Concept is required'
-  });
-}
-
-const song = generateSongRecommendation(concept);
-
-res.json({
-  success: true,
-  song
-});
-```
-
-} catch (error) {
-console.error(‘Song recommendation error:’, error);
-res.status(500).json({
-success: false,
-error: error.message || ‘Failed to get song recommendation’
-});
-}
-});
-
-// –––––––– Instagram Caption Generator ––––––––
-app.post(’/api/generate-instagram-caption’, async (req, res) => {
-try {
-const { concept } = req.body;
-
-```
-if (!concept || !concept.title) {
-  return res.status(400).json({
-    success: false,
-    error: 'Concept with title is required'
-  });
-}
-
-// Generate hashtags
-const hashtags = generateHashtags(concept);
-
-// Create caption
-let caption = '';
-caption += '🎬 New AI-generated movie poster alert! ✨\n\n';
-caption += `📽️ "${concept.title}" (${concept.decade || 'Unknown Era'})\n`;
-caption += `🎭 ${concept.tagline || 'An unforgettable cinematic experience'}\n\n`;
-
-// Shortened synopsis
-const synopsis = concept.synopsis || 'A groundbreaking film that will leave you on the edge of your seat.';
-const shortSynopsis = synopsis.length > 120 ? synopsis.substring(0, 120) + '...' : synopsis;
-caption += shortSynopsis + '\n\n';
-
-// Cast and crew
-if (concept.cast && concept.cast.length > 0) {
-  caption += `⭐ Starring: ${concept.cast.slice(0, 2).join(', ')}\n`;
-}
-if (concept.director) {
-  caption += `🎥 Directed by: ${concept.director}\n`;
-}
-
-caption += '\n🤖 Created with AI • What movie should I generate next?\n\n';
-caption += hashtags;
-
-res.json({
-  success: true,
-  caption
-});
-```
-
-} catch (error) {
-console.error(‘Instagram caption error:’, error);
-res.status(500).json({
-success: false,
-error: error.message || ‘Failed to generate Instagram caption’
-});
-}
-});
-
-function generateHashtags(concept) {
-const tags = [
-‘#AIart’, ‘#MoviePoster’, ‘#GenerativeAI’, ‘#FilmDesign’,
-‘#CinematicArt’, ‘#ArtificialIntelligence’, ‘#DigitalArt’, ‘#MovieMagic’
-];
-
-// Add genre-specific tags
-if (concept.genre) {
-const genreLower = concept.genre.toLowerCase();
-if (genreLower.includes(‘horror’)) {
-tags.push(’#Horror’, ‘#ScaryMovies’, ‘#HorrorArt’);
-}
-if (genreLower.includes(‘sci-fi’) || genreLower.includes(‘science fiction’)) {
-tags.push(’#SciFi’, ‘#ScienceFiction’, ‘#Futuristic’);
-}
-if (genreLower.includes(‘thriller’)) {
-tags.push(’#Thriller’, ‘#Suspense’);
-}
-if (genreLower.includes(‘action’)) {
-tags.push(’#Action’, ‘#ActionMovies’);
-}
-}
-
-// Add decade-specific tags
-if (concept.decade) {
-tags.push(`#${concept.decade}`);
-if (concept.decade === ‘1980s’) {
-tags.push(’#Retro’, ‘#80sAesthetic’, ‘#Neon’);
-}
-if (concept.decade === ‘1950s’) {
-tags.push(’#Vintage’, ‘#Classic’, ‘#FilmNoir’);
-}
-}
-
-// Add creative tags
-tags.push(’#PosterDesign’, ‘#ConceptArt’, ‘#VisualEffects’, ‘#CreativeAI’);
-tags.push(’#Cinema’, ‘#Entertainment’, ‘#ArtLovers’, ‘#DesignInspiration’);
-
-// Shuffle and limit to ~25 tags
-const shuffled = tags.sort(() => 0.5 - Math.random()).slice(0, 25);
-
-return shuffled.join(’ ’);
-}
-
-// –––––––– Health & Static Routes ––––––––
-app.get(’/api/health’, (req, res) => {
-res.json({
-status: ‘OK’,
-timestamp: new Date().toISOString(),
-environment: process.env.NODE_ENV || ‘development’,
-hasAnthropicKey: !!ANTHROPIC_API_KEY,
-hasOpenAIKey: !!OPENAI_API_KEY,
-version: ‘2.0.0’
-});
-});
-
-app.get(’/’, (req, res) => {
-res.sendFile(path.join(__dirname, ‘public’, ‘index.html’));
-});
-
-// Error handling middleware
-app.use((error, req, res, next) => {
-console.error(‘💥 Unhandled error:’, error);
-res.status(500).json({
-success: false,
-error: ‘Internal server error’,
-timestamp: new Date().toISOString()
-});
-});
-
-// 404 handler
-app.use((req, res) => {
-res.status(404).json({
-success: false,
-error: ‘Endpoint not found’,
-path: req.path
-});
-});
-
-// Graceful shutdown
-process.on(‘SIGTERM’, () => {
-console.log(‘🛑 SIGTERM received, shutting down gracefully…’);
-process.exit(0);
-});
-
-app.listen(PORT, () => {
-console.log(`🎬 Movie Poster AI Backend v2.0 running on http://localhost:${PORT}`);
-console.log(`📁 Serving static files from /public`);
-console.log(`🔑 API Keys: Anthropic ${ANTHROPIC_API_KEY ? '✅' : '❌'}, OpenAI ${OPENAI_API_KEY ? '✅' : '❌'}`);
-console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
-
-module.exports = app;
+</body>
+</html>
