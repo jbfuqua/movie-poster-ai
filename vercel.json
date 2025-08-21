@@ -1,12 +1,13 @@
 {
   "version": 2,
+  "name": "movie-poster-ai",
   "builds": [
     {
       "src": "server.js",
       "use": "@vercel/node"
     },
     {
-      "src": "public/**",
+      "src": "public/**/*",
       "use": "@vercel/static"
     }
   ],
@@ -19,5 +20,13 @@
       "src": "/(.*)",
       "dest": "/public/$1"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "server.js": {
+      "maxDuration": 60
+    }
+  }
 }
