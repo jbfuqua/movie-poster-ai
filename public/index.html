@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,1974 +20,859 @@
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .font-cinzel { font-family: 'Cinzel', sans-serif; }
 
-```
-    .glass-morphism {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .neon-glow {
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-    }
-    
-    .poster-glow {
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    }
-    
-    .floating {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.8s ease-in-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .pulse-ring {
-        animation: pulseRing 2s infinite;
-    }
-    
-    @keyframes pulseRing {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(1.5); opacity: 0; }
-    }
-    
-    .gradient-text {
-        background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 3px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(59, 130, 246, 0.6);
-        border-radius: 3px;
-    }
-</style>
-```
-
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        .poster-glow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-ring {
+            animation: pulseRing 2s infinite;
+        }
+        
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body class="text-gray-200 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
 
-```
-<div class="w-full max-w-7xl mx-auto">
-    <!-- Enhanced Header -->
-    <header class="text-center mb-12 fade-in">
-        <h1 class="text-5xl sm:text-7xl font-bebas tracking-wider gradient-text mb-4">
-            Generative Movie Poster AI
-        </h1>
-        <p class="text-xl text-gray-400 mb-2">Powered by Advanced AI • Creating Cinematic Art</p>
-        <div class="flex justify-center items-center space-x-4 text-sm text-gray-500">
-            <span id="status-indicator" class="flex items-center">
-                <div class="w-2 h-2 bg-green-500 rounded-full mr-2 pulse-ring"></div>
-                <span>Ready</span>
-            </span>
-            <span>•</span>
-            <span id="generation-counter">0 posters created</span>
-            <span>•</span>
-            <span id="auto-timer">Next: Auto</span>
-        </div>
-    </header>
-
-    <main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
-        <!-- Enhanced Poster Display -->
-        <div class="xl:col-span-3 glass-morphism p-6 rounded-2xl shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-montserrat font-bold text-white">Current Generation</h2>
-                <div class="flex space-x-2">
-                    <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                        Save Poster
-                    </button>
-                    <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                        Share
-                    </button>
-                </div>
+    <div class="w-full max-w-7xl mx-auto">
+        <!-- Enhanced Header -->
+        <header class="text-center mb-12 fade-in">
+            <h1 class="text-5xl sm:text-7xl font-bebas tracking-wider gradient-text mb-4">
+                Generative Movie Poster AI
+            </h1>
+            <p class="text-xl text-gray-400 mb-2">Powered by Advanced AI • Creating Cinematic Art</p>
+            <div class="flex justify-center items-center space-x-4 text-sm text-gray-500">
+                <span id="status-indicator" class="flex items-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2 pulse-ring"></div>
+                    <span>Ready</span>
+                </span>
+                <span>•</span>
+                <span id="generation-counter">0 posters created</span>
+                <span>•</span>
+                <span id="auto-timer">Next: Auto</span>
             </div>
-            
-            <div id="poster-container" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-glow floating relative">
-                <div id="loader" class="absolute inset-0 bg-gray-800 flex items-center justify-center z-10">
-                    <div class="text-center">
-                        <svg aria-hidden="true" class="w-16 h-16 text-gray-400 animate-spin fill-blue-600 mx-auto mb-4" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                        </svg>
-                        <p id="loading-text" class="text-lg font-medium text-blue-400">Generating concept...</p>
-                        <div class="w-64 bg-gray-700 rounded-full h-2 mt-4">
-                            <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-                <img id="poster-image" src="" alt="Generated Movie Poster" class="hidden w-full h-full object-cover">
-            </div>
-        </div>
+        </header>
 
-        <!-- Enhanced Controls and Info -->
-        <div class="xl:col-span-1 space-y-6">
-            <!-- Generation Controls -->
-            <div class="glass-morphism p-6 rounded-2xl">
-                <h3 class="text-xl font-montserrat font-bold text-white mb-4">Controls</h3>
-                <div class="space-y-4">
-                    <button id="generate-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none neon-glow">
-                        <span id="btn-text">Generate New Poster</span>
-                    </button>
-                    
-                    <div class="flex items-center justify-between">
-                        <label class="text-sm font-medium text-gray-300">Auto-generate</label>
-                        <button id="auto-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-600 transition-colors">
-                            <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+        <main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            <!-- Enhanced Poster Display -->
+            <div class="xl:col-span-3 glass-morphism p-6 rounded-2xl shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-montserrat font-bold text-white">Current Generation</h2>
+                    <div class="flex space-x-2">
+                        <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Save Poster
+                        </button>
+                        <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Share
                         </button>
                     </div>
-                    
-                    <div>
-                        <label class="text-sm font-medium text-gray-300 block mb-2">Genre Filter</label>
-                        <select id="genre-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
-                            <option value="any">Any Genre</option>
-                            <option value="horror">Horror</option>
-                            <option value="sci-fi">Sci-Fi</option>
-                            <option value="fusion">Sci-Fi Horror</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="text-sm font-medium text-gray-300 block mb-2">Era Preference</label>
-                        <select id="era-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
-                            <option value="any">Any Era</option>
-                            <option value="1950s">1950s</option>
-                            <option value="1960s">1960s</option>
-                            <option value="1970s">1970s</option>
-                            <option value="1980s">1980s</option>
-                            <option value="1990s">1990s</option>
-                            <option value="2000s">2000s</option>
-                            <option value="2010s">2010s</option>
-                            <option value="2020s">2020s</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="text-sm font-medium text-gray-300 block mb-2">Art Style</label>
-                        <select id="art-style-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
-                            <option value="authentic">Era Authentic</option>
-                            <option value="b-movie">B-Movie Exaggerated</option>
-                            <option value="photo">Modern Photography</option>
-                            <option value="painted">Classic Painted Art</option>
-                        </select>
-                    </div>
                 </div>
-            </div>
-
-            <!-- Movie Details -->
-            <div class="glass-morphism p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
-                <h3 class="text-xl font-montserrat font-bold text-white mb-4">Movie Details</h3>
-                <div id="movie-info" class="space-y-4">
-                    <div class="border-l-4 border-blue-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Era</label>
-                        <p id="decade-text" class="text-lg text-white font-medium">-</p>
-                    </div>
-                    <div class="border-l-4 border-purple-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Genre</label>
-                        <p id="genre-text" class="text-lg text-white font-medium">-</p>
-                    </div>
-                    <div class="border-l-4 border-yellow-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Title</label>
-                        <p id="title-text" class="text-2xl font-bebas text-yellow-400 leading-tight">-</p>
-                    </div>
-                    <div class="border-l-4 border-green-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Tagline</label>
-                        <p id="tagline-text" class="text-base italic text-gray-300">-</p>
-                    </div>
-                    <div class="border-l-4 border-red-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Synopsis</label>
-                        <p id="synopsis-text" class="text-sm text-gray-200 leading-relaxed">-</p>
-                    </div>
-                    <div class="border-l-4 border-pink-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Instagram Caption</label>
-                        <div class="bg-gray-800 p-3 rounded-lg mt-2">
-                            <textarea id="instagram-caption" class="w-full bg-transparent text-xs text-gray-300 resize-none border-none outline-none" rows="6" readonly placeholder="Generate a poster to see Instagram caption..."></textarea>
-                            <button id="copy-caption-btn" class="mt-2 px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-xs transition-all disabled:opacity-50" disabled>
-                                Copy Caption
-                            </button>
-                        </div>
-                    </div>
-                    <div class="border-l-4 border-indigo-500 pl-4">
-                        <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Soundtrack Recommendation</label>
-                        <div class="bg-gray-800 p-3 rounded-lg mt-2">
-                            <div class="flex items-center space-x-2 mb-2">
-                                <span class="text-lg">🎵</span>
-                                <div>
-                                    <p id="song-title" class="text-sm font-medium text-white">-</p>
-                                    <p id="song-artist" class="text-xs text-gray-400">-</p>
-                                </div>
+                
+                <div id="poster-container" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-glow floating relative">
+                    <div id="loader" class="absolute inset-0 bg-gray-800 flex items-center justify-center z-10">
+                        <div class="text-center">
+                            <svg aria-hidden="true" class="w-16 h-16 text-gray-400 animate-spin fill-blue-600 mx-auto mb-4" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                            </svg>
+                            <p id="loading-text" class="text-lg font-medium text-blue-400">Generating concept...</p>
+                            <div class="w-64 bg-gray-700 rounded-full h-2 mt-4">
+                                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
                             </div>
-                            <p id="song-reason" class="text-xs text-gray-300 italic">-</p>
-                            <button id="copy-song-btn" class="mt-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs transition-all disabled:opacity-50" disabled>
-                                Copy Song Info
+                        </div>
+                    </div>
+                    <img id="poster-image" src="" alt="Generated Movie Poster" class="hidden w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Enhanced Controls and Info -->
+            <div class="xl:col-span-1 space-y-6">
+                <!-- Generation Controls -->
+                <div class="glass-morphism p-6 rounded-2xl">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Controls</h3>
+                    <div class="space-y-4">
+                        <button id="generate-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none neon-glow">
+                            <span id="btn-text">Generate New Poster</span>
+                        </button>
+                        
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-300">Auto-generate</label>
+                            <button id="auto-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-600 transition-colors">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
                             </button>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-300 block mb-2">Genre Filter</label>
+                            <select id="genre-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                                <option value="any">Any Genre</option>
+                                <option value="horror">Horror</option>
+                                <option value="sci-fi">Sci-Fi</option>
+                                <option value="fusion">Sci-Fi Horror</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-300 block mb-2">Era Preference</label>
+                            <select id="era-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                                <option value="any">Any Era</option>
+                                <option value="1950s">1950s</option>
+                                <option value="1960s">1960s</option>
+                                <option value="1970s">1970s</option>
+                                <option value="1980s">1980s</option>
+                                <option value="1990s">1990s</option>
+                                <option value="2000s">2000s</option>
+                                <option value="2010s">2010s</option>
+                                <option value="2020s">2020s</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-300 block mb-2">Art Style</label>
+                            <select id="art-style-filter" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white">
+                                <option value="authentic">Era Authentic</option>
+                                <option value="b-movie">B-Movie Exaggerated</option>
+                                <option value="photo">Modern Photography</option>
+                                <option value="painted">Classic Painted Art</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-                
-                <div id="error-message" class="hidden bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg mt-4">
-                    <p><strong>Error:</strong> <span id="error-text"></span></p>
-                    <button id="retry-btn" class="mt-2 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm">Retry</button>
+
+                <!-- Movie Details -->
+                <div class="glass-morphism p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Movie Details</h3>
+                    <div id="movie-info" class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Era</label>
+                            <p id="decade-text" class="text-lg text-white font-medium">-</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Genre</label>
+                            <p id="genre-text" class="text-lg text-white font-medium">-</p>
+                        </div>
+                        <div class="border-l-4 border-yellow-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Title</label>
+                            <p id="title-text" class="text-2xl font-bebas text-yellow-400 leading-tight">-</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Tagline</label>
+                            <p id="tagline-text" class="text-base italic text-gray-300">-</p>
+                        </div>
+                        <div class="border-l-4 border-red-500 pl-4">
+                            <label class="font-bold text-xs text-gray-400 uppercase tracking-wide">Synopsis</label>
+                            <p id="synopsis-text" class="text-sm text-gray-200 leading-relaxed">-</p>
+                        </div>
+                    </div>
+                    
+                    <div id="error-message" class="hidden bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg mt-4">
+                        <p><strong>Error:</strong> <span id="error-text"></span></p>
+                        <button id="retry-btn" class="mt-2 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm">Retry</button>
+                    </div>
+                </div>
+
+                <!-- Recent Generations -->
+                <div class="glass-morphism p-6 rounded-2xl">
+                    <h3 class="text-xl font-montserrat font-bold text-white mb-4">Recent Generations</h3>
+                    <div id="recent-posters" class="grid grid-cols-2 gap-2">
+                        <!-- Recent poster thumbnails will be added here -->
+                    </div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Recent Generations -->
-            <div class="glass-morphism p-6 rounded-2xl">
-                <h3 class="text-xl font-montserrat font-bold text-white mb-4">Recent Generations</h3>
-                <div id="recent-posters" class="grid grid-cols-2 gap-2">
-                    <!-- Recent poster thumbnails will be added here -->
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
+    <!-- Hidden canvas for image processing -->
+    <canvas id="poster-canvas" class="hidden"></canvas>
 
-<!-- Hidden elements -->
-<canvas id="poster-canvas" class="hidden"></canvas>
-
-<script>
-    class PosterAI {
-        constructor() {
-            console.log('PosterAI constructor called');
-            
-            this.BACKEND_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
-                ? 'http://localhost:3000' 
-                : window.location.origin;
-            this.CONCEPT_API_URL = this.BACKEND_BASE_URL + '/api/generate-concept';
-            this.IMAGE_API_URL = this.BACKEND_BASE_URL + '/api/generate-image';
-            
-            this.isGenerating = false;
-            this.autoGenerate = false; // Changed to false by default
-            this.generationCount = 0;
-            this.autoTimer = null;
-            this.recentPosters = [];
-            this.currentConcept = null;
-            
-            this.initializeElements();
-            this.setupEventListeners();
-            this.checkBackendHealth();
-            this.startAutoTimer();
-            
-            setTimeout(function() {
-                this.handleGeneration();
-            }.bind(this), 2000);
-        }
-
-        initializeElements() {
-            console.log('Initializing DOM elements...');
-            this.elements = {
-                generateBtn: document.getElementById('generate-btn'),
-                posterContainer: document.getElementById('poster-container'),
-                posterImage: document.getElementById('poster-image'),
-                loader: document.getElementById('loader'),
-                loadingText: document.getElementById('loading-text'),
-                progressBar: document.getElementById('progress-bar'),
-                btnText: document.getElementById('btn-text'),
+    <script>
+        class EnhancedPosterAI {
+            constructor() {
+                console.log('EnhancedPosterAI constructor called');
                 
-                decadeText: document.getElementById('decade-text'),
-                genreText: document.getElementById('genre-text'),
-                titleText: document.getElementById('title-text'),
-                taglineText: document.getElementById('tagline-text'),
-                synopsisText: document.getElementById('synopsis-text'),
-                instagramCaption: document.getElementById('instagram-caption'),
-                copyCaptionBtn: document.getElementById('copy-caption-btn'),
-                songTitle: document.getElementById('song-title'),
-                songArtist: document.getElementById('song-artist'),
-                songReason: document.getElementById('song-reason'),
-                copySongBtn: document.getElementById('copy-song-btn'),
+                this.BACKEND_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+                    ? 'http://localhost:3000' 
+                    : window.location.origin;
+                this.CONCEPT_API_URL = this.BACKEND_BASE_URL + '/api/generate-concept';
+                this.IMAGE_API_URL = this.BACKEND_BASE_URL + '/api/generate-image';
                 
-                autoToggle: document.getElementById('auto-toggle'),
-                genreFilter: document.getElementById('genre-filter'),
-                eraFilter: document.getElementById('era-filter'),
-                artStyleFilter: document.getElementById('art-style-filter'),
-                saveBtn: document.getElementById('save-btn'),
-                shareBtn: document.getElementById('share-btn'),
-                
-                statusIndicator: document.getElementById('status-indicator'),
-                generationCounter: document.getElementById('generation-counter'),
-                autoTimer: document.getElementById('auto-timer'),
-                
-                errorMessage: document.getElementById('error-message'),
-                errorText: document.getElementById('error-text'),
-                retryBtn: document.getElementById('retry-btn'),
-                
-                recentPosters: document.getElementById('recent-posters'),
-                canvas: document.getElementById('poster-canvas')
-            };
-            
-            this.ctx = this.elements.canvas.getContext('2d');
-            console.log('DOM elements initialized');
-        }
-
-        setupEventListeners() {
-            var self = this;
-            console.log('Setting up event listeners...');
-            
-            this.elements.generateBtn.addEventListener('click', function() {
-                self.handleGeneration();
-            });
-            
-            this.elements.autoToggle.addEventListener('click', function() {
-                self.toggleAutoGenerate();
-            });
-            
-            this.elements.saveBtn.addEventListener('click', function() {
-                self.savePoster();
-            });
-            
-            this.elements.shareBtn.addEventListener('click', function() {
-                self.sharePoster();
-            });
-            
-            this.elements.retryBtn.addEventListener('click', function() {
-                self.handleGeneration();
-            });
-            
-            this.elements.genreFilter.addEventListener('change', function() {
-                if (!self.isGenerating) self.handleGeneration();
-            });
-            
-            this.elements.eraFilter.addEventListener('change', function() {
-                if (!self.isGenerating) self.handleGeneration();
-            });
-            
-            this.elements.artStyleFilter.addEventListener('change', function() {
-                if (!self.isGenerating) self.handleGeneration();
-            });
-            
-            this.elements.copyCaptionBtn.addEventListener('click', function() {
-                self.copyInstagramCaption();
-            });
-            
-            this.elements.copySongBtn.addEventListener('click', function() {
-                self.copySongInfo();
-            });
-            
-            console.log('Event listeners set up');
-        }
-
-        async checkBackendHealth() {
-            try {
-                console.log('Checking backend health...');
-                var response = await fetch(this.BACKEND_BASE_URL + '/api/health');
-                
-                if (response.ok) {
-                    var health = await response.json();
-                    console.log('Backend is healthy:', health);
-                    this.updateStatus('ready', 'Backend Connected');
-                } else {
-                    throw new Error('Backend health check failed: ' + response.status);
-                }
-            } catch (error) {
-                console.error('Backend health check failed:', error);
-                this.showError('Backend server not running. Please start the server with "npm start" and refresh the page.');
-                this.updateStatus('error', 'Backend Offline');
-            }
-        }
-
-        updateProgress(stage, percentage) {
-            var stages = {
-                'concept': 'Generating concept...',
-                'image': 'Creating artwork...',
-                'text': 'Adding typography...',
-                'complete': 'Complete!'
-            };
-            
-            if (this.elements.loadingText) {
-                this.elements.loadingText.textContent = stages[stage] || 'Processing...';
-            }
-            if (this.elements.progressBar) {
-                this.elements.progressBar.style.width = percentage + '%';
-            }
-        }
-
-        async generateMovieConcept() {
-            console.log("Generating movie concept with Claude via backend...");
-            this.updateProgress('concept', 10);
-            
-            var payload = {
-                genreFilter: this.elements.genreFilter.value,
-                eraFilter: this.elements.eraFilter.value,
-                artStyleFilter: this.elements.artStyleFilter.value
-            };
-
-            try {
-                console.log('Making request to: ' + this.CONCEPT_API_URL);
-                
-                var response = await fetch(this.CONCEPT_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                var responseText = await response.text();
-
-                if (!response.ok) {
-                    throw new Error('Request failed with status ' + response.status + ': ' + responseText);
-                }
-
-                var result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (parseError) {
-                    throw new Error('Invalid JSON response: ' + parseError.message);
-                }
-                
-                if (result.success && result.concept) {
-                    console.log("Concept generated by Claude:", result.concept);
-                    this.updateProgress('concept', 30);
-                    return result.concept;
-                } else {
-                    throw new Error(result.error || "Invalid response from backend");
-                }
-            } catch (error) {
-                console.error("Error generating movie concept:", error);
-                this.showError('Failed to generate movie concept: ' + error.message);
-                return null;
-            }
-        }
-
-        async generateImage(visualElements, concept) {
-            console.log("Generating poster image with DALL-E 3 via backend...");
-            this.updateProgress('image', 50);
-            
-            // Enhanced photorealistic prompt construction
-            var enhancedPrompt = this.buildPhotorealisticPrompt(concept, visualElements);
-            
-            var payload = {
-                visualElements: visualElements,
-                concept: concept,
-                enhancedPrompt: enhancedPrompt
-            };
-
-            try {
-                var response = await fetch(this.IMAGE_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                var responseText = await response.text();
-
-                if (!response.ok) {
-                    throw new Error('Request failed with status ' + response.status + ': ' + responseText);
-                }
-
-                var result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (parseError) {
-                    throw new Error('Invalid JSON response: ' + parseError.message);
-                }
-                
-                if (result.success && result.imageUrl) {
-                    console.log("Image generated successfully with DALL-E 3.");
-                    if (result.revisedPrompt) {
-                        console.log("DALL-E 3 revised prompt:", result.revisedPrompt);
-                    }
-                    this.updateProgress('image', 70);
-                    
-                    return result.imageUrl;
-                } else {
-                    throw new Error(result.error || "Invalid response from backend");
-                }
-            } catch (error) {
-                console.error("Error generating image:", error);
-                this.showError('Failed to generate poster image: ' + error.message);
-                return null;
-            }
-        }
-
-        buildPhotorealisticPrompt(concept, visualElements) {
-            var genre = (concept.genre || '').toLowerCase();
-            var decade = concept.decade || '2020s';
-            var artStyle = this.elements.artStyleFilter.value;
-            
-            // Era-authentic art styles (how posters were actually made)
-            var eraStyles = {
-                '1950s': 'hand-painted illustration, gouache painting, realistic painted art, vintage movie poster painting style',
-                '1960s': 'painted poster art, acrylic painting, illustrated movie poster, psychedelic painted style',
-                '1970s': 'airbrushed poster art, painted illustration, realistic painted scenes, 70s poster painting',
-                '1980s': 'painted poster art with photographic elements, airbrush art, illustrated scenes',
-                '1990s': 'photographic movie poster, professional photography, cinematic photography',
-                '2000s': 'digital photography, professional movie photography, high-end commercial photography',
-                '2010s': 'digital photography, IMAX quality, professional cinematography',
-                '2020s': 'ultra-high definition photography, premium commercial photography'
-            };
-            
-            var prompt = '';
-            
-            // Determine art approach
-            switch(artStyle) {
-                case 'authentic':
-                    // Use historically accurate style for the decade
-                    var isPrePhoto = ['1950s', '1960s', '1970s', '1980s'].includes(decade);
-                    if (isPrePhoto) {
-                        prompt = eraStyles[decade] + ', movie poster art, ' + decade + ' style. ';
-                    } else {
-                        prompt = 'Professional movie poster photography, cinematic lighting, ' + decade + ' style. ';
-                    }
-                    break;
-                    
-                case 'b-movie':
-                    // Exaggerated B-movie style
-                    prompt = 'Exaggerated B-movie poster art, over-the-top dramatic scenes, ' +
-                            'pulp magazine style, sensationalized imagery, dramatic painted illustration, ' +
-                            'cheesy 1950s monster movie poster style, melodramatic composition. ';
-                    break;
-                    
-                case 'photo':
-                    // Modern photography regardless of era
-                    prompt = 'Professional movie poster photography, cinematic lighting, ' +
-                            'high contrast, dramatic shadows, photorealistic. ';
-                    break;
-                    
-                case 'painted':
-                    // Classic painted art regardless of era
-                    prompt = 'Hand-painted movie poster art, illustrated poster style, ' +
-                            'painted scenes, artistic illustration, traditional poster painting. ';
-                    break;
-            }
-            
-            // Add genre-specific elements (keep concise)
-            var genreElements = {
-                horror: 'dark atmospheric mood, ominous shadows',
-                'sci-fi': 'futuristic elements, otherworldly atmosphere', 
-                thriller: 'suspenseful mood, dramatic tension',
-                action: 'dynamic energy, explosive action',
-                drama: 'emotional depth, character focus'
-            };
-            
-            var genreKey = Object.keys(genreElements).find(g => genre.includes(g)) || 'drama';
-            prompt += genreElements[genreKey] + '. ';
-            
-            // Add visual elements concisely
-            if (visualElements) {
-                prompt += visualElements + '. ';
-            }
-            
-            // Essential constraints (keep short)
-            prompt += 'NO TEXT OR LETTERS in image. Movie poster composition, ' + decade + ' aesthetic.';
-            
-            console.log('Optimized prompt (' + prompt.length + ' chars):', prompt);
-            return prompt;
-        }
-
-        addTextToImage(imageUrl, concept) {
-            var self = this;
-            return new Promise(function(resolve, reject) {
-                self.updateProgress('text', 80);
-                console.log("Adding text to image...");
-                
-                var img = new Image();
-                img.crossOrigin = "Anonymous";
-                img.onload = function() {
-                    var aspectRatio = img.width / img.height;
-                    self.elements.canvas.width = 1200;
-                    self.elements.canvas.height = self.elements.canvas.width / aspectRatio;
-
-                    self.ctx.clearRect(0, 0, self.elements.canvas.width, self.elements.canvas.height);
-                    self.ctx.drawImage(img, 0, 0, self.elements.canvas.width, self.elements.canvas.height);
-                    
-                    self.renderPosterText(concept);
-                    
-                    // Enhanced credits rendering
-                    self.forceRenderCredits(self.ctx, self.elements.canvas.width, self.elements.canvas.height, concept);
-                    
-                    self.updateProgress('complete', 100);
-                    console.log("Text added successfully.");
-                    resolve(self.elements.canvas.toDataURL('image/png'));
-                };
-                img.onerror = function() {
-                    reject(new Error("Failed to load image onto canvas."));
-                };
-                img.src = imageUrl;
-            });
-        }
-
-        renderPosterText(concept) {
-            var canvas = this.elements.canvas;
-            var ctx = this.ctx;
-            
-            var decadeStyles = {
-                '1950s': { titleFonts: ['Cinzel', 'Bebas Neue'], style: 'classic' },
-                '1960s': { titleFonts: ['Bebas Neue', 'Oswald'], style: 'psychedelic' },
-                '1970s': { titleFonts: ['Oswald', 'Bebas Neue'], style: 'gritty' },
-                '1980s': { titleFonts: ['Orbitron', 'Montserrat'], style: 'neon' },
-                '1990s': { titleFonts: ['Montserrat', 'Oswald'], style: 'grunge' },
-                '2000s': { titleFonts: ['Poppins', 'Montserrat'], style: 'digital' },
-                '2010s': { titleFonts: ['Montserrat', 'Poppins'], style: 'minimal' },
-                '2020s': { titleFonts: ['Poppins', 'Montserrat'], style: 'contemporary' }
-            };
-            
-            var baseStyle = decadeStyles[concept.decade] || {
-                titleFonts: ['Montserrat', 'Poppins'],
-                style: 'modern'
-            };
-            
-            var selectedFont = baseStyle.titleFonts[Math.floor(Math.random() * baseStyle.titleFonts.length)];
-            
-            // 1. Top credits (actors)
-            this.renderTopCredits(ctx, canvas, concept);
-            
-            // 2. Smart title placement with density analysis
-            var optimalTitleZone = this.findOptimalTitlePlacement(ctx, canvas, concept.title);
-            
-            this.renderDynamicText(ctx, concept.title.toUpperCase(), selectedFont, optimalTitleZone.zone, {
-                color: optimalTitleZone.color,
-                shadow: true,
-                glow: baseStyle.style === 'neon',
-                style: baseStyle.style,
-                enhanced: true
-            });
-            
-            // 3. Smart tagline placement
-            var taglineZone = this.findOptimalTaglineZone(ctx, canvas, optimalTitleZone.zone);
-            if (taglineZone && concept.tagline) {
-                this.renderTagline(ctx, concept.tagline, taglineZone.zone, taglineZone.color, canvas);
-            }
-        }
-
-        findOptimalTitlePlacement(ctx, canvas, title) {
-            // Define potential title zones (top, middle, bottom thirds)
-            var margin = canvas.width * 0.06;
-            var zones = [
-                // Top third (classic placement)
-                { 
-                    x: margin, 
-                    y: canvas.height * 0.05, 
-                    width: canvas.width - (margin * 2), 
-                    height: canvas.height * 0.25,
-                    preference: 0.8 // Prefer top placement
-                },
-                // Upper middle
-                { 
-                    x: margin, 
-                    y: canvas.height * 0.15, 
-                    width: canvas.width - (margin * 2), 
-                    height: canvas.height * 0.25,
-                    preference: 0.9
-                },
-                // Lower middle  
-                { 
-                    x: margin, 
-                    y: canvas.height * 0.35, 
-                    width: canvas.width - (margin * 2), 
-                    height: canvas.height * 0.25,
-                    preference: 0.7
-                },
-                // Bottom third (modern placement)
-                { 
-                    x: margin, 
-                    y: canvas.height * 0.65, 
-                    width: canvas.width - (margin * 2), 
-                    height: canvas.height * 0.25,
-                    preference: 0.6
-                }
-            ];
-            
-            var bestZone = zones[0];
-            var bestScore = 0;
-            
-            zones.forEach(function(zone) {
-                var analysis = this.analyzeZoneForText(ctx, zone, title);
-                var score = analysis.suitability * zone.preference;
-                
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestZone = {
-                        zone: zone,
-                        color: analysis.optimalColor,
-                        contrast: analysis.contrast
-                    };
-                }
-            }.bind(this));
-            
-            return bestZone;
-        }
-
-        analyzeZoneForText(ctx, zone, text) {
-            try {
-                // Sample the zone for color analysis
-                var imageData = ctx.getImageData(zone.x, zone.y, zone.width, zone.height);
-                var data = imageData.data;
-                
-                var totalBrightness = 0;
-                var colorVariance = 0;
-                var edgeCount = 0;
-                var sampleCount = 0;
-                
-                // Analyze in grid pattern for better coverage
-                var stepX = Math.max(1, Math.floor(zone.width / 20));
-                var stepY = Math.max(1, Math.floor(zone.height / 20));
-                
-                for (var y = 0; y < zone.height; y += stepY) {
-                    for (var x = 0; x < zone.width; x += stepX) {
-                        var index = (y * zone.width + x) * 4;
-                        if (index < data.length - 3) {
-                            var r = data[index];
-                            var g = data[index + 1];
-                            var b = data[index + 2];
-                            
-                            var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                            totalBrightness += brightness;
-                            
-                            // Check for edges (high contrast areas)
-                            if (x > 0 && y > 0) {
-                                var prevIndex = ((y-stepY) * zone.width + (x-stepX)) * 4;
-                                if (prevIndex >= 0 && prevIndex < data.length - 3) {
-                                    var prevR = data[prevIndex];
-                                    var prevG = data[prevIndex + 1];
-                                    var prevB = data[prevIndex + 2];
-                                    var prevBrightness = (prevR * 0.299 + prevG * 0.587 + prevB * 0.114);
-                                    
-                                    if (Math.abs(brightness - prevBrightness) > 50) {
-                                        edgeCount++;
-                                    }
-                                }
-                            }
-                            
-                            sampleCount++;
-                        }
-                    }
-                }
-                
-                var averageBrightness = totalBrightness / sampleCount;
-                var edgeDensity = edgeCount / sampleCount;
-                
-                // Calculate suitability score
-                // Prefer areas with:
-                // - Low edge density (less visual conflict)
-                // - Good contrast potential
-                // - Not too extreme brightness
-                var suitability = 1.0;
-                
-                // Penalize high edge density (busy areas)
-                if (edgeDensity > 0.3) {
-                    suitability *= (1 - edgeDensity);
-                }
-                
-                // Prefer moderate brightness for good contrast
-                if (averageBrightness < 50 || averageBrightness > 200) {
-                    suitability *= 0.8;
-                }
-                
-                // Determine optimal text color
-                var optimalColor = averageBrightness < 128 ? '#FFFFFF' : '#000000';
-                var contrast = averageBrightness < 128 ? averageBrightness : (255 - averageBrightness);
-                
-                return {
-                    suitability: Math.max(0.1, suitability),
-                    optimalColor: optimalColor,
-                    contrast: contrast,
-                    brightness: averageBrightness,
-                    edgeDensity: edgeDensity
-                };
-                
-            } catch (error) {
-                console.error('Error analyzing zone:', error);
-                return {
-                    suitability: 0.5,
-                    optimalColor: '#FFFFFF',
-                    contrast: 128,
-                    brightness: 128,
-                    edgeDensity: 0
-                };
-            }
-        }
-
-        findOptimalTaglineZone(ctx, canvas, titleZone) {
-            // Position tagline below title with spacing
-            var margin = canvas.width * 0.06;
-            var spacing = 30;
-            
-            var taglineY = titleZone.y + titleZone.height + spacing;
-            
-            // Ensure tagline doesn't go too low
-            if (taglineY + 100 > canvas.height * 0.8) {
-                // Try above title instead
-                taglineY = Math.max(margin, titleZone.y - 80);
-            }
-            
-            var zone = {
-                x: margin,
-                y: taglineY,
-                width: canvas.width - (margin * 2),
-                height: 80
-            };
-            
-            var analysis = this.analyzeZoneForText(ctx, zone, 'tagline');
-            
-            return {
-                zone: zone,
-                color: analysis.optimalColor
-            };
-        }
-
-        renderTopCredits(ctx, canvas, concept) {
-            var topArea = {
-                x: canvas.width * 0.1,
-                y: canvas.height * 0.05,
-                width: canvas.width * 0.8,
-                height: canvas.height * 0.15
-            };
-            
-            var topColor = this.analyzeAreaForTextColor(ctx, topArea);
-            var topOutlineColor = topColor === '#FFFFFF' ? '#000000' : '#FFFFFF';
-            
-            var topActors = concept.cast ? concept.cast.slice(0, 3) : this.generateTopActors();
-            var actorText = topActors.join('    ').toUpperCase();
-            
-            var maxFontSize = Math.max(canvas.width / 25, 20);
-            var minFontSize = Math.max(canvas.width / 80, 12);
-            var fontSize = maxFontSize;
-            var textWidth;
-            
-            do {
-                ctx.font = 'bold ' + fontSize + 'px Lato';
-                textWidth = ctx.measureText(actorText).width;
-                if (textWidth <= (topArea.width * 0.9)) break;
-                fontSize -= 2;
-            } while (fontSize >= minFontSize);
-            
-            var outlineWidth = Math.max(fontSize / 20, 2);
-            
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            var actorY = topArea.y + (topArea.height / 2);
-            
-            var offsets = [
-                [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
-                [-outlineWidth, 0], [outlineWidth, 0],
-                [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
-            ];
-            
-            ctx.fillStyle = topOutlineColor;
-            for (var d = 0; d < offsets.length; d++) {
-                var offsetX = offsets[d][0];
-                var offsetY = offsets[d][1];
-                ctx.fillText(actorText, canvas.width / 2 + offsetX, actorY + offsetY);
-            }
-            
-            ctx.fillStyle = topColor;
-            ctx.fillText(actorText, canvas.width / 2, actorY);
-        }
-
-        renderTagline(ctx, taglineText, taglineZone, titleColor, canvas) {
-            var maxFontSize = Math.max(taglineZone.width / 30, 16);
-            var minFontSize = Math.max(taglineZone.width / 60, 12);
-            var fontSize = maxFontSize;
-            var lines, textHeight;
-            
-            while (fontSize >= minFontSize) {
-                ctx.font = 'italic ' + fontSize + 'px Lato';
-                
-                var words = taglineText.split(' ');
-                var currentLine = '';
-                lines = [];
-                
-                for (var i = 0; i < words.length; i++) {
-                    var testLine = currentLine + words[i] + ' ';
-                    if (ctx.measureText(testLine).width > (taglineZone.width * 0.9) && currentLine.length > 0) {
-                        lines.push(currentLine.trim());
-                        currentLine = words[i] + ' ';
-                    } else {
-                        currentLine = testLine;
-                    }
-                }
-                lines.push(currentLine.trim());
-                
-                var lineHeight = fontSize * 1.2;
-                textHeight = lines.length * lineHeight;
-                
-                if (textHeight <= (taglineZone.height * 0.8)) {
-                    break;
-                }
-                
-                fontSize -= 2;
-            }
-            
-            var taglineColor = this.getComplementaryReadableColor(titleColor, ctx, canvas, taglineZone.y);
-            var taglineOutlineColor = taglineColor.includes('255, 255, 255') ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)';
-            var taglineOutlineWidth = Math.max(fontSize / 30, 1.5);
-            
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            var startY = taglineZone.y + (taglineZone.height / 2) - (textHeight / 2) + (fontSize * 0.6);
-            
-            for (var i = 0; i < lines.length; i++) {
-                var lineY = startY + (i * fontSize * 1.2);
-                
-                ctx.fillStyle = taglineOutlineColor;
-                var offsets = [
-                    [-taglineOutlineWidth, -taglineOutlineWidth], [0, -taglineOutlineWidth], [taglineOutlineWidth, -taglineOutlineWidth],
-                    [-taglineOutlineWidth, 0], [taglineOutlineWidth, 0],
-                    [-taglineOutlineWidth, taglineOutlineWidth], [0, taglineOutlineWidth], [taglineOutlineWidth, taglineOutlineWidth]
-                ];
-                
-                for (var d = 0; d < offsets.length; d++) {
-                    var offsetX = offsets[d][0];
-                    var offsetY = offsets[d][1];
-                    ctx.fillText(lines[i], taglineZone.x + (taglineZone.width / 2) + offsetX, lineY + offsetY);
-                }
-                
-                ctx.fillStyle = taglineColor;
-                ctx.fillText(lines[i], taglineZone.x + (taglineZone.width / 2), lineY);
-            }
-        }
-
-        analyzeImageForOptimalTextColor(ctx, canvas, textArea) {
-            var imageData = ctx.getImageData(textArea.x, textArea.y, textArea.width, textArea.height);
-            var data = imageData.data;
-            
-            var totalBrightness = 0;
-            var sampleCount = 0;
-            
-            for (var i = 0; i < data.length; i += 200) {
-                var r = data[i];
-                var g = data[i + 1];
-                var b = data[i + 2];
-                
-                var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                totalBrightness += brightness;
-                sampleCount++;
-            }
-            
-            var averageBrightness = totalBrightness / sampleCount;
-            
-            return averageBrightness < 128 ? '#FFFFFF' : '#000000';
-        }
-        
-        getComplementaryReadableColor(titleColor, ctx, canvas, yPosition) {
-            var sampleWidth = canvas.width * 0.8;
-            var sampleHeight = 50;
-            var sampleX = canvas.width * 0.1;
-            
-            try {
-                var imageData = ctx.getImageData(sampleX, yPosition, sampleWidth, sampleHeight);
-                var data = imageData.data;
-                
-                var totalBrightness = 0;
-                var sampleCount = 0;
-                
-                for (var i = 0; i < data.length; i += 200) {
-                    var r = data[i];
-                    var g = data[i + 1];
-                    var b = data[i + 2];
-                    
-                    var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                    totalBrightness += brightness;
-                    sampleCount++;
-                }
-                
-                var averageBrightness = totalBrightness / sampleCount;
-                return averageBrightness < 128 ? 'rgba(255, 255, 255, 0.95)' : 'rgba(0, 0, 0, 0.95)';
-                
-            } catch (error) {
-                return 'rgba(255, 255, 255, 0.95)';
-            }
-        }
-        
-        analyzeAreaForTextColor(ctx, area) {
-            try {
-                var imageData = ctx.getImageData(area.x, area.y, area.width, area.height);
-                var data = imageData.data;
-                
-                var totalBrightness = 0;
-                var sampleCount = 0;
-                
-                for (var i = 0; i < data.length; i += 200) {
-                    var r = data[i];
-                    var g = data[i + 1];
-                    var b = data[i + 2];
-                    
-                    var brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                    totalBrightness += brightness;
-                    sampleCount++;
-                }
-                
-                var averageBrightness = totalBrightness / sampleCount;
-                return averageBrightness < 128 ? '#FFFFFF' : '#000000';
-            } catch (error) {
-                return '#FFFFFF';
-            }
-        }
-
-        renderDynamicText(ctx, text, font, box, options) {
-            var fontSize = Math.min(120, box.width / 8);
-            var lines, textBlockHeight, lineHeight;
-
-            while (fontSize > 15) {
-                lineHeight = fontSize * 1.1;
-                ctx.font = 'bold ' + fontSize + 'px ' + font;
-                
-                var words = text.split(' ');
-                var currentLine = '';
-                lines = [];
-                
-                for (var j = 0; j < words.length; j++) {
-                    var word = words[j];
-                    var testLine = currentLine + word + ' ';
-                    if (ctx.measureText(testLine).width > (box.width * 0.9) && currentLine.length > 0) {
-                        lines.push(currentLine.trim());
-                        currentLine = word + ' ';
-                    } else {
-                        currentLine = testLine;
-                    }
-                }
-                lines.push(currentLine.trim());
-                
-                textBlockHeight = lines.length * lineHeight;
-                
-                if (textBlockHeight <= (box.height * 0.9)) {
-                    break;
-                }
-                
-                fontSize -= 3;
-            }
-
-            var x = box.x + box.width / 2;
-            var startY = box.y + box.height / 2 - (textBlockHeight / 2) + (lineHeight / 2);
-            
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            // Enhanced professional text rendering
-            if (options.enhanced) {
-                this.renderProfessionalText(ctx, lines, x, startY, lineHeight, fontSize, options);
-            } else {
-                // Fallback to basic rendering
-                this.renderBasicText(ctx, lines, x, startY, lineHeight, fontSize, options);
-            }
-        }
-
-        renderProfessionalText(ctx, lines, x, startY, lineHeight, fontSize, options) {
-            // Create multiple layer effect for professional look
-            
-            // Layer 1: Deep shadow base
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-            var shadowOffset = Math.max(fontSize / 20, 4);
-            for (var i = 0; i < lines.length; i++) {
-                ctx.fillText(lines[i], x + shadowOffset, startY + (i * lineHeight) + shadowOffset);
-            }
-            
-            // Layer 2: Colored background/glow
-            if (options.glow) {
-                ctx.shadowColor = options.color;
-                ctx.shadowBlur = Math.max(fontSize / 3, 20);
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-                ctx.fillStyle = options.color;
-                
-                for (var i = 0; i < lines.length; i++) {
-                    ctx.fillText(lines[i], x, startY + (i * lineHeight));
-                }
-                
-                // Intensify glow
-                ctx.shadowBlur = Math.max(fontSize / 6, 10);
-                for (var i = 0; i < lines.length; i++) {
-                    ctx.fillText(lines[i], x, startY + (i * lineHeight));
-                }
-                
-                // Reset shadow
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-            }
-            
-            // Layer 3: Thick outline for readability
-            var outlineWidth = Math.max(fontSize / 15, 3);
-            ctx.strokeStyle = options.color === '#FFFFFF' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)';
-            ctx.lineWidth = outlineWidth;
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            
-            for (var i = 0; i < lines.length; i++) {
-                ctx.strokeText(lines[i], x, startY + (i * lineHeight));
-            }
-            
-            // Layer 4: Inner outline for depth
-            ctx.strokeStyle = options.color === '#FFFFFF' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)';
-            ctx.lineWidth = Math.max(outlineWidth / 2, 1);
-            
-            for (var i = 0; i < lines.length; i++) {
-                ctx.strokeText(lines[i], x, startY + (i * lineHeight));
-            }
-            
-            // Layer 5: Main text with subtle gradient effect
-            if (options.style === 'neon') {
-                // Create gradient for neon effect
-                var gradient = ctx.createLinearGradient(x - 100, startY, x + 100, startY + lineHeight);
-                gradient.addColorStop(0, options.color);
-                gradient.addColorStop(0.5, '#FFFFFF');
-                gradient.addColorStop(1, options.color);
-                ctx.fillStyle = gradient;
-            } else if (options.style === 'classic') {
-                // Subtle gold/warm gradient for classic films
-                var gradient = ctx.createLinearGradient(x, startY - fontSize/2, x, startY + fontSize/2);
-                gradient.addColorStop(0, '#FFD700');
-                gradient.addColorStop(0.5, options.color);
-                gradient.addColorStop(1, '#FFA500');
-                ctx.fillStyle = gradient;
-            } else {
-                ctx.fillStyle = options.color;
-            }
-            
-            for (var i = 0; i < lines.length; i++) {
-                ctx.fillText(lines[i], x, startY + (i * lineHeight));
-            }
-            
-            // Layer 6: Highlight effect on top
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.font = 'bold ' + fontSize + 'px ' + ctx.font.split('px ')[1];
-            
-            for (var i = 0; i < lines.length; i++) {
-                // Subtle highlight on top edge
-                ctx.fillText(lines[i], x, startY + (i * lineHeight) - 1);
-            }
-            
-            // Add decade-specific effects
-            this.addDecadeSpecificEffects(ctx, lines, x, startY, lineHeight, fontSize, options);
-        }
-
-        addDecadeSpecificEffects(ctx, lines, x, startY, lineHeight, fontSize, options) {
-            switch(options.style) {
-                case 'neon':
-                    // 80s neon glow enhancement
-                    ctx.shadowColor = options.color;
-                    ctx.shadowBlur = fontSize / 2;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    for (var i = 0; i < lines.length; i++) {
-                        ctx.fillText(lines[i], x, startY + (i * lineHeight));
-                    }
-                    ctx.shadowBlur = 0;
-                    break;
-                    
-                case 'grunge':
-                    // 90s distressed effect
-                    ctx.save();
-                    ctx.globalCompositeOperation = 'multiply';
-                    ctx.fillStyle = 'rgba(100, 100, 100, 0.1)';
-                    for (var i = 0; i < lines.length; i++) {
-                        // Slightly offset multiple renders for grungy texture
-                        ctx.fillText(lines[i], x + 1, startY + (i * lineHeight));
-                        ctx.fillText(lines[i], x - 1, startY + (i * lineHeight) + 1);
-                    }
-                    ctx.restore();
-                    break;
-                    
-                case 'classic':
-                    // 50s elegant serif enhancement
-                    ctx.fillStyle = 'rgba(255, 215, 0, 0.2)';
-                    for (var i = 0; i < lines.length; i++) {
-                        // Subtle golden undertone
-                        ctx.fillText(lines[i], x, startY + (i * lineHeight));
-                    }
-                    break;
-            }
-        }
-
-        renderBasicText(ctx, lines, x, startY, lineHeight, fontSize, options) {
-            // Simplified version for fallback
-            var outlineWidth = Math.max(fontSize / 25, 3);
-            
-            ctx.fillStyle = options.color === '#FFFFFF' ? '#000000' : '#FFFFFF';
-            
-            var offsets = [
-                [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
-                [-outlineWidth, 0], [outlineWidth, 0],
-                [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
-            ];
-            
-            for (var d = 0; d < offsets.length; d++) {
-                var offsetX = offsets[d][0];
-                var offsetY = offsets[d][1];
-                for (var i = 0; i < lines.length; i++) {
-                    ctx.fillText(lines[i], x + offsetX, startY + (i * lineHeight) + offsetY);
-                }
-            }
-            
-            ctx.fillStyle = options.color || '#FFFFFF';
-            
-            for (var i = 0; i < lines.length; i++) {
-                ctx.fillText(lines[i], x, startY + (i * lineHeight));
-            }
-            
-            if (options.glow) {
-                ctx.shadowColor = options.color;
-                ctx.shadowBlur = Math.max(fontSize / 4, 15);
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-                
-                for (var i = 0; i < lines.length; i++) {
-                    ctx.fillText(lines[i], x, startY + (i * lineHeight));
-                }
-            }
-
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-        }
-
-        generateTopActors() {
-            var firstNames = ['ALEX', 'MORGAN', 'CASEY', 'JORDAN', 'TAYLOR', 'RILEY'];
-            var lastNames = ['STONE', 'CROSS', 'STEEL', 'FOX', 'KNIGHT', 'HUNTER'];
-            
-            var actors = [];
-            for (var i = 0; i < 3; i++) {
-                var first = firstNames[Math.floor(Math.random() * firstNames.length)];
-                var last = lastNames[Math.floor(Math.random() * lastNames.length)];
-                actors.push(first + ' ' + last);
-            }
-            return actors;
-        }
-
-        generateProducers() {
-            var producerNames = [
-                'SARAH BLOCKCHAIN', 'MIKE QUANTUM', 'ALEXANDRA NEURAL',
-                'DAVID ALGORITHM', 'JENNIFER MATRIX', 'ROBERT CIPHER',
-                'EMMA VERTEX', 'JAMES NEURAL', 'SOPHIA TENSOR'
-            ];
-            
-            // Usually 1-2 producers listed
-            var numProducers = Math.random() > 0.6 ? 2 : 1;
-            var selected = [];
-            
-            for (var i = 0; i < numProducers; i++) {
-                var producer = producerNames[Math.floor(Math.random() * producerNames.length)];
-                if (!selected.includes(producer)) {
-                    selected.push(producer);
-                }
-            }
-            
-            return selected.join(' AND ');
-        }
-
-        generateStudio() {
-            var studios = [
-                'NEURAL PICTURES', 'QUANTUM FILMS', 'MATRIX ENTERTAINMENT',
-                'ALGORITHM STUDIOS', 'DIGITAL FORGE', 'SYNTHETIC CINEMA',
-                'VERTEX PRODUCTIONS', 'CIPHER FILMS', 'NEXUS PICTURES',
-                'BINARY STUDIOS', 'INFINITY ENTERTAINMENT', 'PIXEL FORGE'
-            ];
-            
-            return studios[Math.floor(Math.random() * studios.length)];
-        }
-        
-        forceRenderCredits(ctx, width, height, concept) {
-            console.log("ENHANCED CREDITS RENDERING STARTED");
-            
-            // Save context state
-            ctx.save();
-            
-            // Much larger, more visible font size
-            var fontSize = Math.max(width / 45, 18); // Significantly larger than before
-            console.log("Credits font size:", fontSize);
-            
-            ctx.font = 'bold ' + fontSize + 'px Lato';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic';
-            
-            // Generate authentic bottom credits (no duplicate starring)
-            var producers = this.generateProducers();
-            var studio = this.generateStudio();
-            var currentYear = new Date().getFullYear();
-            
-            var creditLines = [
-                'DIRECTED BY ' + (concept.director || 'AI DIRECTOR').toUpperCase(),
-                'PRODUCED BY ' + producers.toUpperCase(),
-                'A ' + studio.toUpperCase() + ' FILM',
-                (concept.rating || 'NR') + '  •  ' + (concept.runtime || 120) + ' MINUTES',
-                '© ' + currentYear + ' ' + studio.split(' ')[0].toUpperCase() + ' ENTERTAINMENT'
-            ];
-            
-            // Enhanced spacing and positioning
-            var lineHeight = fontSize * 1.6; // More line spacing
-            var totalCreditsHeight = creditLines.length * lineHeight;
-            var startY = height - totalCreditsHeight - 40; // More margin from bottom
-            
-            console.log("Credits positioned at startY:", startY, "totalHeight:", totalCreditsHeight);
-            
-            // Strong outline for maximum visibility
-            var outlineWidth = Math.max(fontSize / 15, 3);
-            
-            for (var i = 0; i < creditLines.length; i++) {
-                var y = startY + (i * lineHeight);
-                var text = creditLines[i];
-                
-                console.log("Drawing credit line", i, ":", text, "at y:", y);
-                
-                // Multiple outline passes for stronger contrast
-                var outlineOffsets = [
-                    [-outlineWidth, -outlineWidth], [0, -outlineWidth], [outlineWidth, -outlineWidth],
-                    [-outlineWidth, 0], [outlineWidth, 0],
-                    [-outlineWidth, outlineWidth], [0, outlineWidth], [outlineWidth, outlineWidth]
-                ];
-                
-                // Black outline first
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-                for (var j = 0; j < outlineOffsets.length; j++) {
-                    var offsetX = outlineOffsets[j][0];
-                    var offsetY = outlineOffsets[j][1];
-                    ctx.fillText(text, width / 2 + offsetX, y + offsetY);
-                }
-                
-                // White text on top
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                ctx.fillText(text, width / 2, y);
-                
-                // Additional shadow for depth
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                ctx.fillText(text, width / 2, y);
-                
-                // Reset shadow
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-            }
-            
-            // Restore context
-            ctx.restore();
-            console.log("ENHANCED CREDITS RENDERING COMPLETED");
-        }
-
-        updateInfo(concept) {
-            if (this.elements.decadeText) this.elements.decadeText.textContent = concept.decade || '-';
-            if (this.elements.genreText) this.elements.genreText.textContent = concept.genre || '-';
-            if (this.elements.titleText) this.elements.titleText.textContent = concept.title || '-';
-            if (this.elements.taglineText) this.elements.taglineText.textContent = concept.tagline || '-';
-            if (this.elements.synopsisText) this.elements.synopsisText.textContent = concept.synopsis || '-';
-            
-            // Generate Instagram caption
-            this.generateInstagramCaption(concept);
-            
-            // Generate song recommendation
-            this.generateSongRecommendation(concept);
-            
-            if (this.elements.decadeText && this.elements.decadeText.parentElement) {
-                this.elements.decadeText.parentElement.classList.add('fade-in');
-            }
-        }
-
-        generateInstagramCaption(concept) {
-            if (!concept.title) {
-                this.elements.instagramCaption.value = '';
-                this.elements.copyCaptionBtn.disabled = true;
-                return;
-            }
-
-            // Create formatted Instagram caption
-            var caption = '';
-            
-            // Main text
-            caption += '🎬 New AI-generated movie poster alert! ✨\n\n';
-            caption += '📽️ "' + concept.title + '" (' + (concept.decade || 'Unknown Era') + ')\n';
-            caption += '🎭 ' + (concept.tagline || 'An unforgettable cinematic experience') + '\n\n';
-            
-            // Synopsis (shortened for Instagram)
-            var shortSynopsis = concept.synopsis ? 
-                (concept.synopsis.length > 120 ? concept.synopsis.substring(0, 120) + '...' : concept.synopsis) :
-                'A groundbreaking film that will leave you on the edge of your seat.';
-            caption += shortSynopsis + '\n\n';
-            
-            // Cast and crew
-            if (concept.cast && concept.cast.length > 0) {
-                caption += '⭐ Starring: ' + concept.cast.slice(0, 2).join(', ') + '\n';
-            }
-            if (concept.director) {
-                caption += '🎥 Directed by: ' + concept.director + '\n';
-            }
-            
-            caption += '\n🤖 Created with AI • What movie should I generate next?\n\n';
-            
-            // Hashtags - space separated for easy copying
-            var hashtags = this.generateHashtags(concept);
-            caption += hashtags;
-
-            this.elements.instagramCaption.value = caption;
-            this.elements.copyCaptionBtn.disabled = false;
-        }
-
-        generateHashtags(concept) {
-            var tags = [
-                '#AIart', '#MoviePoster', '#GenerativeAI', '#FilmDesign',
-                '#CinematicArt', '#ArtificialIntelligence', '#DigitalArt', '#MovieMagic'
-            ];
-            
-            // Add genre-specific tags
-            if (concept.genre) {
-                var genreLower = concept.genre.toLowerCase();
-                if (genreLower.includes('horror')) {
-                    tags.push('#Horror', '#ScaryMovies', '#HorrorArt');
-                }
-                if (genreLower.includes('sci-fi') || genreLower.includes('science fiction')) {
-                    tags.push('#SciFi', '#ScienceFiction', '#Futuristic');
-                }
-                if (genreLower.includes('thriller')) {
-                    tags.push('#Thriller', '#Suspense');
-                }
-                if (genreLower.includes('action')) {
-                    tags.push('#Action', '#ActionMovies');
-                }
-                if (genreLower.includes('drama')) {
-                    tags.push('#Drama');
-                }
-                if (genreLower.includes('comedy')) {
-                    tags.push('#Comedy');
-                }
-            }
-            
-            // Add decade-specific tags
-            if (concept.decade) {
-                tags.push('#' + concept.decade);
-                if (concept.decade === '1980s') {
-                    tags.push('#Retro', '#80sAesthetic', '#Neon');
-                }
-                if (concept.decade === '1950s') {
-                    tags.push('#Vintage', '#Classic', '#FilmNoir');
-                }
-                if (concept.decade === '2020s') {
-                    tags.push('#Modern', '#Contemporary');
-                }
-            }
-            
-            // Add creative tags
-            tags.push('#PosterDesign', '#ConceptArt', '#VisualEffects', '#CreativeAI');
-            tags.push('#Cinema', '#Entertainment', '#ArtLovers', '#DesignInspiration');
-            
-            // Shuffle and limit to ~30 tags (Instagram best practice)
-            var shuffled = tags.sort(() => 0.5 - Math.random()).slice(0, 30);
-            
-            return shuffled.join(' ');
-        }
-
-        async copyInstagramCaption() {
-            if (!this.elements.instagramCaption.value) return;
-            
-            try {
-                await navigator.clipboard.writeText(this.elements.instagramCaption.value);
-                
-                var originalText = this.elements.copyCaptionBtn.textContent;
-                this.elements.copyCaptionBtn.textContent = 'Copied! ✓';
-                this.elements.copyCaptionBtn.classList.add('bg-green-600');
-                this.elements.copyCaptionBtn.classList.remove('bg-pink-600');
-                
-                setTimeout(function() {
-                    this.elements.copyCaptionBtn.textContent = originalText;
-                    this.elements.copyCaptionBtn.classList.remove('bg-green-600');
-                    this.elements.copyCaptionBtn.classList.add('bg-pink-600');
-                }.bind(this), 2000);
-                
-            } catch (error) {
-                console.error('Error copying caption:', error);
-                this.showError('Failed to copy caption. Please try again.');
-            }
-        }
-
-        generateSongRecommendation(concept) {
-            if (!concept.title) {
-                this.elements.songTitle.textContent = '-';
-                this.elements.songArtist.textContent = '-';
-                this.elements.songReason.textContent = '-';
-                this.elements.copySongBtn.disabled = true;
-                return;
-            }
-
-            var recommendation = this.getSongForMovie(concept);
-            
-            this.elements.songTitle.textContent = recommendation.title;
-            this.elements.songArtist.textContent = recommendation.artist;
-            this.elements.songReason.textContent = recommendation.reason;
-            this.elements.copySongBtn.disabled = false;
-        }
-
-        getSongForMovie(concept) {
-            var genre = (concept.genre || '').toLowerCase();
-            var decade = concept.decade || '';
-            var title = concept.title || '';
-            var tagline = (concept.tagline || '').toLowerCase();
-            var synopsis = (concept.synopsis || '').toLowerCase();
-            
-            // Combine text for mood analysis
-            var combinedText = (genre + ' ' + tagline + ' ' + synopsis).toLowerCase();
-            
-            // Genre and decade-specific song databases
-            var songDatabase = {
-                '1950s': {
-                    horror: [
-                        { title: 'Monster Mash', artist: 'Bobby Pickett', reason: 'Classic 50s horror novelty song with vintage charm' },
-                        { title: 'Fever', artist: 'Peggy Lee', reason: 'Sultry jazz that captures 50s psychological thriller atmosphere' },
-                        { title: 'Cry Me a River', artist: 'Julie London', reason: 'Dark, moody jazz perfect for film noir horror' }
-                    ],
-                    scifi: [
-                        { title: 'Flying Purple People Eater', artist: 'Sheb Wooley', reason: 'Whimsical 50s sci-fi novelty hit' },
-                        { title: 'Space Oddity', artist: 'David Bowie', reason: 'Timeless space exploration anthem' },
-                        { title: 'Mr. Sandman', artist: 'The Chordettes', reason: 'Dreamy harmony with otherworldly quality' }
-                    ],
-                    default: [
-                        { title: 'Only You', artist: 'The Platters', reason: 'Quintessential 50s romance and drama' },
-                        { title: 'Great Balls of Fire', artist: 'Jerry Lee Lewis', reason: 'High-energy 50s rock perfect for action scenes' },
-                        { title: 'Blue Moon', artist: 'Billie Holiday', reason: 'Timeless jazz standard with emotional depth' }
-                    ]
-                },
-                '1960s': {
-                    horror: [
-                        { title: 'Season of the Witch', artist: 'Donovan', reason: 'Psychedelic folk with dark, mystical undertones' },
-                        { title: 'House of the Rising Sun', artist: 'The Animals', reason: 'Haunting ballad with ominous atmosphere' },
-                        { title: 'Paint It Black', artist: 'The Rolling Stones', reason: 'Dark rock anthem perfect for psychological horror' }
-                    ],
-                    scifi: [
-                        { title: 'Telstar', artist: 'The Tornados', reason: 'Space-age instrumental capturing 60s sci-fi optimism' },
-                        { title: 'White Rabbit', artist: 'Jefferson Airplane', reason: 'Psychedelic journey into altered realities' },
-                        { title: '2001: A Space Odyssey Theme', artist: 'Richard Strauss', reason: 'Epic orchestral piece synonymous with space exploration' }
-                    ],
-                    default: [
-                        { title: 'Good Vibrations', artist: 'The Beach Boys', reason: 'Innovative 60s production with cinematic scope' },
-                        { title: 'A Whiter Shade of Pale', artist: 'Procol Harum', reason: 'Mysterious and atmospheric 60s classic' },
-                        { title: 'The Sound of Silence', artist: 'Simon & Garfunkel', reason: 'Haunting folk rock with dramatic tension' }
-                    ]
-                },
-                '1970s': {
-                    horror: [
-                        { title: 'Black Sabbath', artist: 'Black Sabbath', reason: 'Heavy metal horror that defined the genre' },
-                        { title: 'Tubular Bells', artist: 'Mike Oldfield', reason: 'Eerie instrumental famously used in The Exorcist' },
-                        { title: 'Nights in White Satin', artist: 'The Moody Blues', reason: 'Dark orchestral rock with gothic atmosphere' }
-                    ],
-                    scifi: [
-                        { title: 'Close Encounters Theme', artist: 'John Williams', reason: 'Iconic sci-fi orchestral communication with aliens' },
-                        { title: 'Oxygène', artist: 'Jean-Michel Jarre', reason: 'Synthesizer masterpiece evoking space and technology' },
-                        { title: 'Autobahn', artist: 'Kraftwerk', reason: 'Electronic pioneering work about machine-human future' }
-                    ],
-                    default: [
-                        { title: 'Bohemian Rhapsody', artist: 'Queen', reason: 'Epic operatic rock with cinematic drama' },
-                        { title: 'Stairway to Heaven', artist: 'Led Zeppelin', reason: 'Progressive rock masterpiece with emotional journey' },
-                        { title: 'Hotel California', artist: 'Eagles', reason: 'Dark narrative rock with mysterious undertones' }
-                    ]
-                },
-                '1980s': {
-                    horror: [
-                        { title: 'Thriller', artist: 'Michael Jackson', reason: 'The ultimate 80s horror anthem with iconic video' },
-                        { title: 'Love Song for a Vampire', artist: 'Annie Lennox', reason: 'Gothic new wave with dark romantic themes' },
-                        { title: 'Somebody\'s Watching Me', artist: 'Rockwell', reason: 'Paranoid 80s synth-pop perfect for psychological horror' }
-                    ],
-                    scifi: [
-                        { title: 'Blue Monday', artist: 'New Order', reason: 'Futuristic synth-pop defining 80s electronic sound' },
-                        { title: 'Cars', artist: 'Gary Numan', reason: 'Robotic new wave about technology and isolation' },
-                        { title: 'Sweet Dreams', artist: 'Eurythmics', reason: 'Synth-pop classic with dystopian undertones' }
-                    ],
-                    default: [
-                        { title: 'Don\'t Stop Believin\'', artist: 'Journey', reason: 'Anthemic 80s rock with emotional crescendo' },
-                        { title: 'Take On Me', artist: 'a-ha', reason: 'Upbeat synth-pop with innovative production' },
-                        { title: 'Every Breath You Take', artist: 'The Police', reason: 'Haunting pop with dark surveillance themes' }
-                    ]
-                },
-                '1990s': {
-                    horror: [
-                        { title: 'Closer', artist: 'Nine Inch Nails', reason: 'Industrial rock with dark psychological themes' },
-                        { title: 'Man in the Box', artist: 'Alice in Chains', reason: 'Grunge with heavy, ominous atmosphere' },
-                        { title: 'Zombie', artist: 'The Cranberries', reason: 'Intense alternative rock with haunting vocals' }
-                    ],
-                    scifi: [
-                        { title: 'Born Slippy', artist: 'Underworld', reason: 'Electronic anthem capturing 90s techno-optimism' },
-                        { title: 'Firestarter', artist: 'The Prodigy', reason: 'Aggressive electronic perfect for cyberpunk themes' },
-                        { title: 'Connection', artist: 'Elastica', reason: 'Britpop with modern communication themes' }
-                    ],
-                    default: [
-                        { title: 'Smells Like Teen Spirit', artist: 'Nirvana', reason: 'Defining grunge anthem of 90s rebellion' },
-                        { title: 'Wonderwall', artist: 'Oasis', reason: 'Anthemic Britpop with emotional resonance' },
-                        { title: 'No Scrubs', artist: 'TLC', reason: 'R&B hit defining 90s attitude and style' }
-                    ]
-                },
-                '2000s': {
-                    horror: [
-                        { title: 'Bodies', artist: 'Drowning Pool', reason: 'Nu-metal aggression perfect for horror action' },
-                        { title: 'Bring Me to Life', artist: 'Evanescence', reason: 'Gothic rock with dark romantic themes' },
-                        { title: 'Chop Suey!', artist: 'System of a Down', reason: 'Intense metal with psychological complexity' }
-                    ],
-                    scifi: [
-                        { title: 'Technologic', artist: 'Daft Punk', reason: 'Electronic meditation on technology and humanity' },
-                        { title: 'Mr. Brightside', artist: 'The Killers', reason: 'Energetic indie rock with modern production' },
-                        { title: 'Time to Dance', artist: 'The Sounds', reason: 'High-energy rock perfect for action sequences' }
-                    ],
-                    default: [
-                        { title: 'Hey Ya!', artist: 'OutKast', reason: 'Genre-blending hit that defined 2000s innovation' },
-                        { title: 'Seven Nation Army', artist: 'The White Stripes', reason: 'Driving rock anthem with cinematic power' },
-                        { title: 'Crazy', artist: 'Gnarls Barkley', reason: 'Soulful pop with retro-futuristic production' }
-                    ]
-                },
-                '2010s': {
-                    horror: [
-                        { title: 'Radioactive', artist: 'Imagine Dragons', reason: 'Dark alternative rock with apocalyptic themes' },
-                        { title: 'Heathens', artist: 'Twenty One Pilots', reason: 'Moody alternative perfect for psychological tension' },
-                        { title: 'Monster', artist: 'Skillet', reason: 'Heavy rock exploring inner darkness' }
-                    ],
-                    scifi: [
-                        { title: 'Midnight City', artist: 'M83', reason: 'Dreamy synthpop evoking futuristic nostalgia' },
-                        { title: 'Pompeii', artist: 'Bastille', reason: 'Indie pop with apocalyptic undertones' },
-                        { title: 'Safe & Sound', artist: 'Capital Cities', reason: 'Electronic pop perfect for sci-fi action' }
-                    ],
-                    default: [
-                        { title: 'Rolling in the Deep', artist: 'Adele', reason: 'Powerful ballad with dramatic emotional arc' },
-                        { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars', reason: 'Retro-funk with modern production polish' },
-                        { title: 'Somebody That I Used to Know', artist: 'Gotye', reason: 'Indie pop with cinematic storytelling' }
-                    ]
-                },
-                '2020s': {
-                    horror: [
-                        { title: 'bad guy', artist: 'Billie Eilish', reason: 'Dark pop with minimalist horror aesthetic' },
-                        { title: 'Therefore I Am', artist: 'Billie Eilish', reason: 'Menacing pop with psychological edge' },
-                        { title: 'Bury a Friend', artist: 'Billie Eilish', reason: 'Haunting electropop perfect for modern horror' }
-                    ],
-                    scifi: [
-                        { title: 'Blinding Lights', artist: 'The Weeknd', reason: 'Synthwave hit with retro-futuristic sound' },
-                        { title: 'Levitating', artist: 'Dua Lipa', reason: 'Disco-pop with space-age production' },
-                        { title: 'Physical', artist: 'Dua Lipa', reason: 'Electronic dance perfect for action sequences' }
-                    ],
-                    default: [
-                        { title: 'drivers license', artist: 'Olivia Rodrigo', reason: 'Emotional ballad defining 2020s storytelling' },
-                        { title: 'Good 4 U', artist: 'Olivia Rodrigo', reason: 'Pop-punk energy perfect for dramatic moments' },
-                        { title: 'Industry Baby', artist: 'Lil Nas X', reason: 'Genre-blending hit with bold production' }
-                    ]
-                }
-            };
-            
-            // Determine genre category
-            var genreCategory = 'default';
-            if (genre.includes('horror')) genreCategory = 'horror';
-            else if (genre.includes('sci-fi') || genre.includes('science fiction')) genreCategory = 'scifi';
-            
-            // Get songs for decade and genre
-            var decadeSongs = songDatabase[decade] || songDatabase['2020s'];
-            var genreSongs = decadeSongs[genreCategory] || decadeSongs['default'];
-            
-            // Mood-based adjustments
-            var moodKeywords = {
-                dark: ['dark', 'shadow', 'night', 'death', 'evil', 'demon', 'curse'],
-                intense: ['action', 'fight', 'battle', 'chase', 'explosive', 'danger'],
-                romantic: ['love', 'heart', 'romance', 'passion', 'beauty'],
-                mysterious: ['mystery', 'secret', 'hidden', 'unknown', 'enigma']
-            };
-            
-            // Select based on mood if possible
-            var selectedSong = genreSongs[Math.floor(Math.random() * genreSongs.length)];
-            
-            // Add context to the reason
-            var contextReason = this.addContextToReason(selectedSong.reason, concept);
-            
-            return {
-                title: selectedSong.title,
-                artist: selectedSong.artist,
-                reason: contextReason
-            };
-        }
-
-        addContextToReason(baseReason, concept) {
-            var additions = [];
-            
-            if (concept.title) {
-                additions.push('Complements the atmosphere of "' + concept.title + '"');
-            }
-            
-            if (concept.decade && concept.genre) {
-                additions.push('perfect for ' + concept.decade + ' ' + concept.genre.toLowerCase() + ' vibes');
-            }
-            
-            if (additions.length > 0) {
-                return baseReason + ' - ' + additions.join(', ') + '.';
-            }
-            
-            return baseReason + '.';
-        }
-
-        async copySongInfo() {
-            if (!this.elements.songTitle.textContent || this.elements.songTitle.textContent === '-') return;
-            
-            var songInfo = '🎵 Soundtrack Recommendation:\n';
-            songInfo += '"' + this.elements.songTitle.textContent + '" by ' + this.elements.songArtist.textContent + '\n\n';
-            songInfo += this.elements.songReason.textContent;
-            
-            try {
-                await navigator.clipboard.writeText(songInfo);
-                
-                var originalText = this.elements.copySongBtn.textContent;
-                this.elements.copySongBtn.textContent = 'Copied! ✓';
-                this.elements.copySongBtn.classList.add('bg-green-600');
-                this.elements.copySongBtn.classList.remove('bg-indigo-600');
-                
-                setTimeout(function() {
-                    this.elements.copySongBtn.textContent = originalText;
-                    this.elements.copySongBtn.classList.remove('bg-green-600');
-                    this.elements.copySongBtn.classList.add('bg-indigo-600');
-                }.bind(this), 2000);
-                
-            } catch (error) {
-                console.error('Error copying song info:', error);
-                this.showError('Failed to copy song info. Please try again.');
-            }
-        }
-
-        showError(message) {
-            if (this.elements.errorText) this.elements.errorText.textContent = message;
-            if (this.elements.errorMessage) this.elements.errorMessage.classList.remove('hidden');
-            this.updateStatus('error', 'Error occurred');
-        }
-
-        hideError() {
-            if (this.elements.errorMessage) this.elements.errorMessage.classList.add('hidden');
-        }
-
-        setLoadingState(isLoading) {
-            this.isGenerating = isLoading;
-            this.elements.generateBtn.disabled = isLoading;
-            this.elements.saveBtn.disabled = isLoading || !this.elements.posterImage.src;
-            this.elements.shareBtn.disabled = isLoading || !this.elements.posterImage.src;
-            
-            if (isLoading) {
-                this.elements.loader.classList.remove('hidden');
-                this.elements.posterImage.classList.add('hidden');
-                this.elements.btnText.textContent = 'Generating...';
-                this.updateStatus('generating', 'Generating');
-            } else {
-                this.elements.loader.classList.add('hidden');
-                this.elements.posterImage.classList.remove('hidden');
-                this.elements.btnText.textContent = 'Generate New Poster';
-                this.updateStatus('ready', 'Ready');
-                this.elements.saveBtn.disabled = false;
-                this.elements.shareBtn.disabled = false;
-            }
-        }
-
-        updateStatus(type, text) {
-            if (!this.elements.statusIndicator) return;
-            
-            var indicator = this.elements.statusIndicator.querySelector('div');
-            var statusText = this.elements.statusIndicator.querySelector('span');
-            
-            if (indicator) {
-                indicator.className = 'w-2 h-2 rounded-full mr-2 pulse-ring';
-                
-                switch(type) {
-                    case 'ready':
-                        indicator.classList.add('bg-green-500');
-                        break;
-                    case 'generating':
-                        indicator.classList.add('bg-blue-500');
-                        break;
-                    case 'error':
-                        indicator.classList.add('bg-red-500');
-                        break;
-                }
-            }
-            
-            if (statusText) {
-                statusText.textContent = text;
-            }
-        }
-
-        addToRecent(imageUrl, concept) {
-            this.recentPosters.unshift({ imageUrl: imageUrl, concept: concept, timestamp: Date.now() });
-            if (this.recentPosters.length > 6) {
-                this.recentPosters.pop();
-            }
-            this.updateRecentDisplay();
-        }
-
-        updateRecentDisplay() {
-            var self = this;
-            this.elements.recentPosters.innerHTML = '';
-            this.recentPosters.forEach(function(poster, index) {
-                var thumb = document.createElement('div');
-                thumb.className = 'aspect-[2/3] bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all';
-                thumb.innerHTML = '<img src="' + poster.imageUrl + '" alt="' + poster.concept.title + '" class="w-full h-full object-cover">';
-                thumb.addEventListener('click', function() {
-                    self.loadPosterFromRecent(index);
-                });
-                self.elements.recentPosters.appendChild(thumb);
-            });
-        }
-
-        loadPosterFromRecent(index) {
-            var poster = this.recentPosters[index];
-            this.elements.posterImage.src = poster.imageUrl;
-            this.currentConcept = poster.concept;
-            this.updateInfo(poster.concept);
-            this.elements.posterImage.classList.remove('hidden');
-            this.elements.loader.classList.add('hidden');
-        }
-
-        async savePoster() {
-            if (!this.elements.posterImage.src) return;
-            
-            try {
-                var link = document.createElement('a');
-                var title = this.currentConcept && this.currentConcept.title ? this.currentConcept.title.replace(/\s+/g, '-') : 'generated';
-                link.download = 'movie-poster-' + title + '.png';
-                link.href = this.elements.posterImage.src;
-                link.click();
-            } catch (error) {
-                console.error('Error saving poster:', error);
-                this.showError('Failed to save poster. Please try again.');
-            }
-        }
-
-        async sharePoster() {
-            if (!this.currentConcept) return;
-            
-            try {
-                if (navigator.share) {
-                    await navigator.share({
-                        title: 'Movie Poster: ' + this.currentConcept.title,
-                        text: 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline,
-                        url: window.location.href
-                    });
-                } else {
-                    var shareText = 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline;
-                    await navigator.clipboard.writeText(shareText);
-                    
-                    var originalText = this.elements.shareBtn.textContent;
-                    this.elements.shareBtn.textContent = 'Copied!';
-                    setTimeout(function() {
-                        this.elements.shareBtn.textContent = originalText;
-                    }.bind(this), 2000);
-                }
-            } catch (error) {
-                console.error('Error sharing poster:', error);
-                this.showError('Failed to share poster. Please try again.');
-            }
-        }
-
-        toggleAutoGenerate() {
-            this.autoGenerate = !this.autoGenerate;
-            var toggle = this.elements.autoToggle;
-            var slider = toggle.querySelector('span');
-            
-            if (this.autoGenerate) {
-                toggle.classList.add('bg-green-600');
-                toggle.classList.remove('bg-gray-600');
-                slider.classList.add('translate-x-6');
-                slider.classList.remove('translate-x-1');
-                this.startAutoTimer();
-            } else {
-                toggle.classList.add('bg-gray-600');
-                toggle.classList.remove('bg-green-600');
-                slider.classList.add('translate-x-1');
-                slider.classList.remove('translate-x-6');
-                this.stopAutoTimer();
-            }
-        }
-
-        startAutoTimer() {
-            if (!this.autoGenerate) return;
-            
-            this.stopAutoTimer();
-            var timeLeft = 180;
-            var self = this;
-            
-            var updateTimer = function() {
-                var minutes = Math.floor(timeLeft / 60);
-                var seconds = timeLeft % 60;
-                self.elements.autoTimer.textContent = 'Next: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-                
-                if (timeLeft <= 0) {
-                    if (!self.isGenerating && self.autoGenerate) {
-                        self.handleGeneration();
-                    }
-                    self.startAutoTimer();
-                } else {
-                    timeLeft--;
-                }
-            };
-            
-            this.autoTimer = setInterval(updateTimer, 1000);
-            updateTimer();
-        }
-
-        stopAutoTimer() {
-            if (this.autoTimer) {
-                clearInterval(this.autoTimer);
+                this.isGenerating = false;
+                this.autoGenerate = false;
+                this.generationCount = 0;
                 this.autoTimer = null;
-                this.elements.autoTimer.textContent = 'Next: Manual';
+                this.recentPosters = [];
+                this.currentConcept = null;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.checkBackendHealth();
+                
+                // Auto-generate first poster after a delay
+                setTimeout(() => {
+                    this.handleGeneration();
+                }, 2000);
             }
-        }
 
-        async handleGeneration() {
-            console.log('handleGeneration called');
-            
-            this.hideError();
-            this.setLoadingState(true);
-            this.updateInfo({ decade: '...', genre: '...', title: '...', tagline: '...', synopsis: '...' });
+            initializeElements() {
+                console.log('Initializing DOM elements...');
+                this.elements = {
+                    generateBtn: document.getElementById('generate-btn'),
+                    posterContainer: document.getElementById('poster-container'),
+                    posterImage: document.getElementById('poster-image'),
+                    loader: document.getElementById('loader'),
+                    loadingText: document.getElementById('loading-text'),
+                    progressBar: document.getElementById('progress-bar'),
+                    btnText: document.getElementById('btn-text'),
+                    
+                    decadeText: document.getElementById('decade-text'),
+                    genreText: document.getElementById('genre-text'),
+                    titleText: document.getElementById('title-text'),
+                    taglineText: document.getElementById('tagline-text'),
+                    synopsisText: document.getElementById('synopsis-text'),
+                    
+                    autoToggle: document.getElementById('auto-toggle'),
+                    genreFilter: document.getElementById('genre-filter'),
+                    eraFilter: document.getElementById('era-filter'),
+                    artStyleFilter: document.getElementById('art-style-filter'),
+                    saveBtn: document.getElementById('save-btn'),
+                    shareBtn: document.getElementById('share-btn'),
+                    
+                    statusIndicator: document.getElementById('status-indicator'),
+                    generationCounter: document.getElementById('generation-counter'),
+                    autoTimer: document.getElementById('auto-timer'),
+                    
+                    errorMessage: document.getElementById('error-message'),
+                    errorText: document.getElementById('error-text'),
+                    retryBtn: document.getElementById('retry-btn'),
+                    
+                    recentPosters: document.getElementById('recent-posters'),
+                    canvas: document.getElementById('poster-canvas')
+                };
+                
+                this.ctx = this.elements.canvas.getContext('2d');
+                console.log('DOM elements initialized');
+            }
 
-            try {
-                var concept = await this.generateMovieConcept();
-                if (!concept) {
-                    this.setLoadingState(false);
-                    return;
+            setupEventListeners() {
+                const self = this;
+                console.log('Setting up event listeners...');
+                
+                this.elements.generateBtn.addEventListener('click', () => self.handleGeneration());
+                this.elements.autoToggle.addEventListener('click', () => self.toggleAutoGenerate());
+                this.elements.saveBtn.addEventListener('click', () => self.savePoster());
+                this.elements.shareBtn.addEventListener('click', () => self.sharePoster());
+                this.elements.retryBtn.addEventListener('click', () => self.handleGeneration());
+                
+                // Auto-generate on filter changes
+                this.elements.genreFilter.addEventListener('change', () => {
+                    if (!self.isGenerating) self.handleGeneration();
+                });
+                this.elements.eraFilter.addEventListener('change', () => {
+                    if (!self.isGenerating) self.handleGeneration();
+                });
+                this.elements.artStyleFilter.addEventListener('change', () => {
+                    if (!self.isGenerating) self.handleGeneration();
+                });
+                
+                console.log('Event listeners set up');
+            }
+
+            async checkBackendHealth() {
+                try {
+                    console.log('Checking backend health...');
+                    const response = await fetch(this.BACKEND_BASE_URL + '/api/health');
+                    
+                    if (response.ok) {
+                        const health = await response.json();
+                        console.log('Backend is healthy:', health);
+                        this.updateStatus('ready', 'Backend Connected');
+                    } else {
+                        throw new Error('Backend health check failed: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Backend health check failed:', error);
+                    this.showError('Backend server not running. Please start the server with "npm start" and refresh the page.');
+                    this.updateStatus('error', 'Backend Offline');
+                }
+            }
+
+            updateProgress(stage, percentage) {
+                const stages = {
+                    'concept': 'Generating concept...',
+                    'image': 'Creating artwork...',
+                    'text': 'Composing poster...',
+                    'complete': 'Complete!'
+                };
+                
+                if (this.elements.loadingText) {
+                    this.elements.loadingText.textContent = stages[stage] || 'Processing...';
+                }
+                if (this.elements.progressBar) {
+                    this.elements.progressBar.style.width = percentage + '%';
+                }
+            }
+
+            async generateMovieConcept() {
+                console.log("Generating movie concept with Claude via backend...");
+                this.updateProgress('concept', 10);
+                
+                const payload = {
+                    genreFilter: this.elements.genreFilter.value,
+                    eraFilter: this.elements.eraFilter.value
+                };
+
+                try {
+                    console.log('Making request to: ' + this.CONCEPT_API_URL);
+                    
+                    const response = await fetch(this.CONCEPT_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const responseText = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error('Request failed with status ' + response.status + ': ' + responseText);
+                    }
+
+                    let result;
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        throw new Error('Invalid JSON response: ' + parseError.message);
+                    }
+                    
+                    if (result.success && result.concept) {
+                        console.log("Concept generated by Claude:", result.concept);
+                        this.updateProgress('concept', 30);
+                        return result.concept;
+                    } else {
+                        throw new Error(result.error || "Invalid response from backend");
+                    }
+                } catch (error) {
+                    console.error("Error generating movie concept:", error);
+                    this.showError('Failed to generate movie concept: ' + error.message);
+                    return null;
+                }
+            }
+
+            async generateImage(visualElements, concept) {
+                console.log("Generating poster image with gpt-image-1 via backend...");
+                this.updateProgress('image', 50);
+                
+                const payload = {
+                    visualElements: visualElements,
+                    concept: concept
+                };
+
+                try {
+                    const response = await fetch(this.IMAGE_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const responseText = await response.text();
+
+                    if (!response.ok) {
+                        throw new Error('Request failed with status ' + response.status + ': ' + responseText);
+                    }
+
+                    let result;
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        throw new Error('Invalid JSON response: ' + parseError.message);
+                    }
+                    
+                    if (result.success && result.imageUrl) {
+                        console.log("Image generated successfully with gpt-image-1.");
+                        if (result.revisedPrompt) {
+                            console.log("gpt-image-1 revised prompt:", result.revisedPrompt);
+                        }
+                        this.updateProgress('image', 70);
+                        
+                        return result.imageUrl;
+                    } else {
+                        throw new Error(result.error || "Invalid response from backend");
+                    }
+                } catch (error) {
+                    console.error("Error generating image:", error);
+                    this.showError('Failed to generate poster image: ' + error.message);
+                    return null;
+                }
+            }
+
+            // Smart crop from 1024x1792 to 2:3 aspect ratio based on subject density
+            smartCropToTwoThirds(imageUrl) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const targetW = 1024;
+                        const targetH = Math.floor(targetW * 1.5); // 2:3 ratio
+                        const step = 32;
+                        let bestCrop = { y: 0, score: -Infinity };
+
+                        // Create temporary canvas for analysis
+                        const tempCanvas = document.createElement('canvas');
+                        const tempCtx = tempCanvas.getContext('2d');
+                        tempCanvas.width = img.width;
+                        tempCanvas.height = img.height;
+                        tempCtx.drawImage(img, 0, 0);
+
+                        // Find optimal crop position using edge density analysis
+                        for (let y = 0; y <= img.height - targetH; y += step) {
+                            try {
+                                const sampleY = y + Math.floor(targetH * 0.25);
+                                const sampleH = Math.floor(targetH * 0.5);
+                                const imageData = tempCtx.getImageData(0, sampleY, targetW, sampleH);
+                                const data = imageData.data;
+                                
+                                let sum = 0, sum2 = 0, count = 0;
+                                
+                                // Sample sparsely for performance
+                                for (let i = 0; i < data.length; i += 16) {
+                                    const r = data[i], g = data[i + 1], b = data[i + 2];
+                                    const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+                                    sum += brightness;
+                                    sum2 += brightness * brightness;
+                                    count++;
+                                }
+                                
+                                const mean = sum / count;
+                                const variance = sum2 / count - mean * mean;
+                                
+                                if (variance > bestCrop.score) {
+                                    bestCrop = { y, score: variance };
+                                }
+                            } catch (error) {
+                                // Skip this position if analysis fails
+                                continue;
+                            }
+                        }
+
+                        // Apply the optimal crop
+                        this.elements.canvas.width = targetW;
+                        this.elements.canvas.height = targetH;
+                        this.ctx.clearRect(0, 0, targetW, targetH);
+                        this.ctx.drawImage(img, 0, bestCrop.y, targetW, targetH, 0, 0, targetW, targetH);
+                        
+                        resolve();
+                    };
+                    img.onerror = () => resolve(); // Continue even if image fails
+                    img.src = imageUrl;
+                });
+            }
+
+            // Add gradient overlays for better text readability
+            addGradientOverlays() {
+                const canvas = this.elements.canvas;
+                const ctx = this.ctx;
+                const w = canvas.width;
+                const h = canvas.height;
+
+                // Top gradient for title area
+                const topGradient = ctx.createLinearGradient(0, 0, 0, h * 0.18);
+                topGradient.addColorStop(0, 'rgba(0, 0, 0, 0.45)');
+                topGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = topGradient;
+                ctx.fillRect(0, 0, w, h * 0.18);
+
+                // Bottom gradient for credits area
+                const bottomGradient = ctx.createLinearGradient(0, h, 0, h * 0.82);
+                bottomGradient.addColorStop(0, 'rgba(0, 0, 0, 0.60)');
+                bottomGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = bottomGradient;
+                ctx.fillRect(0, h * 0.82, w, h * 0.18);
+            }
+
+            // Enhanced title and credits rendering
+            renderTitleAndCredits(concept) {
+                const canvas = this.elements.canvas;
+                const ctx = this.ctx;
+                const w = canvas.width;
+                const h = canvas.height;
+
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Main title
+                const title = (concept.title || '').toUpperCase();
+                if (title) {
+                    let fontSize = Math.min(120, w / 8);
+                    ctx.font = `bold ${fontSize}px Bebas Neue`;
+                    
+                    // Auto-size to fit
+                    while (ctx.measureText(title).width > w * 0.88 && fontSize > 20) {
+                        fontSize -= 2;
+                        ctx.font = `bold ${fontSize}px Bebas Neue`;
+                    }
+
+                    // Soft shadow effect
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                    ctx.shadowBlur = Math.max(fontSize / 6, 10);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(title, w / 2, h * 0.15);
+                    ctx.shadowBlur = 0;
+                }
+
+                // Tagline
+                if (concept.tagline) {
+                    const tagline = concept.tagline;
+                    let fontSize = Math.max(20, Math.floor(w / 35));
+                    ctx.font = `italic ${fontSize}px Lato`;
+                    
+                    // Stroke and fill for readability
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(tagline, w / 2, h * 0.24);
+                    
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    ctx.fillText(tagline, w / 2, h * 0.24);
+                }
+
+                // Bottom credits
+                const credits = [
+                    concept.cast && concept.cast.length ? concept.cast.slice(0, 3).join('    ').toUpperCase() : '',
+                    concept.director ? `DIRECTED BY ${concept.director.toUpperCase()}` : '',
+                    'A NEURAL PICTURES FILM',
+                    'NR  •  120 MINUTES',
+                    `© ${new Date().getFullYear()} NEURAL PICTURES`
+                ].filter(Boolean);
+
+                let fontSize = Math.max(16, Math.floor(w / 45));
+                ctx.font = `bold ${fontSize}px Lato`;
+                
+                const startY = h * 0.86;
+                const lineHeight = fontSize * 1.6;
+                
+                credits.forEach((line, index) => {
+                    const y = startY + index * lineHeight;
+                    
+                    // Stroke outline
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(line, w / 2, y);
+                    
+                    // Fill text
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    ctx.fillText(line, w / 2, y);
+                });
+            }
+
+            updateInfo(concept) {
+                if (this.elements.decadeText) this.elements.decadeText.textContent = concept.decade || '-';
+                if (this.elements.genreText) this.elements.genreText.textContent = concept.genre || '-';
+                if (this.elements.titleText) this.elements.titleText.textContent = concept.title || '-';
+                if (this.elements.taglineText) this.elements.taglineText.textContent = concept.tagline || '-';
+                if (this.elements.synopsisText) this.elements.synopsisText.textContent = concept.synopsis || '-';
+                
+                if (this.elements.decadeText && this.elements.decadeText.parentElement) {
+                    this.elements.decadeText.parentElement.classList.add('fade-in');
+                }
+            }
+
+            showError(message) {
+                if (this.elements.errorText) this.elements.errorText.textContent = message;
+                if (this.elements.errorMessage) this.elements.errorMessage.classList.remove('hidden');
+                this.updateStatus('error', 'Error occurred');
+            }
+
+            hideError() {
+                if (this.elements.errorMessage) this.elements.errorMessage.classList.add('hidden');
+            }
+
+            setLoadingState(isLoading) {
+                this.isGenerating = isLoading;
+                this.elements.generateBtn.disabled = isLoading;
+                this.elements.saveBtn.disabled = isLoading || !this.elements.posterImage.src;
+                this.elements.shareBtn.disabled = isLoading || !this.elements.posterImage.src;
+                
+                if (isLoading) {
+                    this.elements.loader.classList.remove('hidden');
+                    this.elements.posterImage.classList.add('hidden');
+                    this.elements.btnText.textContent = 'Generating...';
+                    this.updateStatus('generating', 'Generating');
+                } else {
+                    this.elements.loader.classList.add('hidden');
+                    this.elements.posterImage.classList.remove('hidden');
+                    this.elements.btnText.textContent = 'Generate New Poster';
+                    this.updateStatus('ready', 'Ready');
+                    this.elements.saveBtn.disabled = false;
+                    this.elements.shareBtn.disabled = false;
+                }
+            }
+
+            updateStatus(type, text) {
+                if (!this.elements.statusIndicator) return;
+                
+                const indicator = this.elements.statusIndicator.querySelector('div');
+                const statusText = this.elements.statusIndicator.querySelector('span');
+                
+                if (indicator) {
+                    indicator.className = 'w-2 h-2 rounded-full mr-2 pulse-ring';
+                    
+                    switch(type) {
+                        case 'ready':
+                            indicator.classList.add('bg-green-500');
+                            break;
+                        case 'generating':
+                            indicator.classList.add('bg-blue-500');
+                            break;
+                        case 'error':
+                            indicator.classList.add('bg-red-500');
+                            break;
+                    }
                 }
                 
-                this.currentConcept = concept;
-                this.updateInfo(concept);
-
-                var baseImageUrl = await this.generateImage(concept.visual_elements, concept);
-                if (!baseImageUrl) {
-                    this.setLoadingState(false);
-                    return;
+                if (statusText) {
+                    statusText.textContent = text;
                 }
+            }
 
-                var finalImageUrl = await this.addTextToImage(baseImageUrl, concept);
-                this.elements.posterImage.src = finalImageUrl;
+            addToRecent(imageUrl, concept) {
+                this.recentPosters.unshift({ imageUrl: imageUrl, concept: concept, timestamp: Date.now() });
+                if (this.recentPosters.length > 6) {
+                    this.recentPosters.pop();
+                }
+                this.updateRecentDisplay();
+            }
+
+            updateRecentDisplay() {
+                const self = this;
+                this.elements.recentPosters.innerHTML = '';
+                this.recentPosters.forEach((poster, index) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'aspect-[2/3] bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all';
+                    thumb.innerHTML = `<img src="${poster.imageUrl}" alt="${poster.concept.title}" class="w-full h-full object-cover">`;
+                    thumb.addEventListener('click', () => {
+                        self.loadPosterFromRecent(index);
+                    });
+                    self.elements.recentPosters.appendChild(thumb);
+                });
+            }
+
+            loadPosterFromRecent(index) {
+                const poster = this.recentPosters[index];
+                this.elements.posterImage.src = poster.imageUrl;
+                this.currentConcept = poster.concept;
+                this.updateInfo(poster.concept);
+                this.elements.posterImage.classList.remove('hidden');
+                this.elements.loader.classList.add('hidden');
+            }
+
+            async savePoster() {
+                if (!this.elements.posterImage.src) return;
                 
-                this.addToRecent(finalImageUrl, concept);
+                try {
+                    const link = document.createElement('a');
+                    const title = this.currentConcept && this.currentConcept.title ? this.currentConcept.title.replace(/\s+/g, '-') : 'generated';
+                    link.download = 'movie-poster-' + title + '.png';
+                    link.href = this.elements.posterImage.src;
+                    link.click();
+                } catch (error) {
+                    console.error('Error saving poster:', error);
+                    this.showError('Failed to save poster. Please try again.');
+                }
+            }
+
+            async sharePoster() {
+                if (!this.currentConcept) return;
                 
-                this.generationCount++;
-                this.elements.generationCounter.textContent = this.generationCount + ' poster' + (this.generationCount !== 1 ? 's' : '') + ' created';
+                try {
+                    if (navigator.share) {
+                        await navigator.share({
+                            title: 'Movie Poster: ' + this.currentConcept.title,
+                            text: 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline,
+                            url: window.location.href
+                        });
+                    } else {
+                        const shareText = 'Check out this AI-generated ' + this.currentConcept.decade + ' ' + this.currentConcept.genre + ' movie poster: "' + this.currentConcept.title + '" - ' + this.currentConcept.tagline;
+                        await navigator.clipboard.writeText(shareText);
+                        
+                        const originalText = this.elements.shareBtn.textContent;
+                        this.elements.shareBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            this.elements.shareBtn.textContent = originalText;
+                        }, 2000);
+                    }
+                } catch (error) {
+                    console.error('Error sharing poster:', error);
+                    this.showError('Failed to share poster. Please try again.');
+                }
+            }
+
+            toggleAutoGenerate() {
+                this.autoGenerate = !this.autoGenerate;
+                const toggle = this.elements.autoToggle;
+                const slider = toggle.querySelector('span');
                 
-            } catch (error) {
-                console.error("Error in generation process:", error);
-                this.showError("Failed to process the poster. Please try again.");
-            } finally {
-                this.setLoadingState(false);
                 if (this.autoGenerate) {
+                    toggle.classList.add('bg-green-600');
+                    toggle.classList.remove('bg-gray-600');
+                    slider.classList.add('translate-x-6');
+                    slider.classList.remove('translate-x-1');
                     this.startAutoTimer();
+                } else {
+                    toggle.classList.add('bg-gray-600');
+                    toggle.classList.remove('bg-green-600');
+                    slider.classList.add('translate-x-1');
+                    slider.classList.remove('translate-x-6');
+                    this.stopAutoTimer();
+                }
+            }
+
+            startAutoTimer() {
+                if (!this.autoGenerate) return;
+                
+                this.stopAutoTimer();
+                let timeLeft = 180;
+                const self = this;
+                
+                const updateTimer = () => {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    self.elements.autoTimer.textContent = 'Next: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                    
+                    if (timeLeft <= 0) {
+                        if (!self.isGenerating && self.autoGenerate) {
+                            self.handleGeneration();
+                        }
+                        self.startAutoTimer();
+                    } else {
+                        timeLeft--;
+                    }
+                };
+                
+                this.autoTimer = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+
+            stopAutoTimer() {
+                if (this.autoTimer) {
+                    clearInterval(this.autoTimer);
+                    this.autoTimer = null;
+                    this.elements.autoTimer.textContent = 'Next: Manual';
+                }
+            }
+
+            async handleGeneration() {
+                console.log('handleGeneration called with improvements');
+                
+                this.hideError();
+                this.setLoadingState(true);
+                this.updateInfo({ decade: '...', genre: '...', title: '...', tagline: '...', synopsis: '...' });
+
+                try {
+                    // 1. Generate concept with improved prompting
+                    this.updateProgress('concept', 10);
+                    const concept = await this.generateMovieConcept();
+                    if (!concept) {
+                        this.setLoadingState(false);
+                        return;
+                    }
+                    
+                    // Add art style to concept for backend processing
+                    concept.artStyle = this.elements.artStyleFilter.value;
+                    this.currentConcept = concept;
+                    this.updateInfo(concept);
+
+                    // 2. Generate image with gpt-image-1
+                    this.updateProgress('image', 40);
+                    const baseImageUrl = await this.generateImage(concept.visual_elements, concept);
+                    if (!baseImageUrl) {
+                        this.setLoadingState(false);
+                        return;
+                    }
+
+                    // 3. Smart crop and compose final poster
+                    this.updateProgress('text', 70);
+                    await this.smartCropToTwoThirds(baseImageUrl);
+                    this.addGradientOverlays();
+                    this.renderTitleAndCredits(concept);
+                    
+                    // 4. Finalize
+                    this.updateProgress('complete', 100);
+                    const finalImageUrl = this.elements.canvas.toDataURL('image/png');
+                    this.elements.posterImage.src = finalImageUrl;
+                    
+                    this.addToRecent(finalImageUrl, concept);
+                    
+                    this.generationCount++;
+                    this.elements.generationCounter.textContent = this.generationCount + ' poster' + (this.generationCount !== 1 ? 's' : '') + ' created';
+                    
+                } catch (error) {
+                    console.error("Error in enhanced generation process:", error);
+                    this.showError("Failed to process the poster. Please try again.");
+                } finally {
+                    this.setLoadingState(false);
+                    if (this.autoGenerate) {
+                        this.startAutoTimer();
+                    }
                 }
             }
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, initializing PosterAI...');
-        window.posterAI = new PosterAI();
-    });
-</script>
-```
-
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing EnhancedPosterAI...');
+            window.posterAI = new EnhancedPosterAI();
+        });
+    </script>
 </body>
 </html>
