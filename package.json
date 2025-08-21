@@ -1,31 +1,35 @@
 {
-  "name": "movie-poster-ai-backend",
-  "version": "1.0.0",
-  "description": "Backend server for Movie Poster AI - handles API calls to Anthropic Claude and OpenAI DALL-E 3",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
-  "keywords": [
-    "movie",
-    "poster",
-    "ai",
-    "claude",
-    "dall-e",
-    "generator"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "node-fetch": "^2.7.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  }
+“name”: “movie-poster-ai”,
+“version”: “2.0.0”,
+“description”: “AI-powered movie poster generator with Claude and DALL-E”,
+“main”: “server.js”,
+“scripts”: {
+“start”: “node server.js”,
+“dev”: “nodemon server.js”,
+“build”: “echo ‘No build step required’”,
+“test”: “echo ‘No tests configured yet’”
+},
+“keywords”: [
+“ai”,
+“movie-poster”,
+“claude”,
+“dall-e”,
+“express”,
+“vercel”
+],
+“author”: “Your Name”,
+“license”: “MIT”,
+“dependencies”: {
+“express”: “^4.18.2”,
+“cors”: “^2.8.5”,
+“node-fetch”: “^2.7.0”,
+“express-rate-limit”: “^7.1.5”,
+“form-data”: “^4.0.0”
+},
+“devDependencies”: {
+“nodemon”: “^3.0.2”
+},
+“engines”: {
+“node”: “>=16.0.0”
+}
 }
