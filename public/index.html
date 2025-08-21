@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -30,84 +31,116 @@
       </div>
     </header>
 
-    <main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
-      <!-- Poster -->
-      <section class="xl:col-span-3 glass p-6 rounded-2xl">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-montserrat font-bold">Current Generation</h2>
-          <div class="flex gap-2">
-            <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded disabled:opacity-50" disabled>Save</button>
-            <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded disabled:opacity-50" disabled>Share</button>
+```
+<main class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+  <!-- Poster -->
+  <section class="xl:col-span-3 glass p-6 rounded-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-montserrat font-bold">Current Generation</h2>
+      <div class="flex gap-2">
+        <button id="save-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded disabled:opacity-50" disabled>Save</button>
+        <button id="share-btn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded disabled:opacity-50" disabled>Share</button>
+      </div>
+    </div>
+
+    <div id="poster-wrap" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-shadow relative">
+      <div id="loader" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center z-10 hidden">
+        <div class="text-center">
+          <svg class="w-14 h-14 mx-auto mb-3 animate-spin text-gray-600" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+          <p id="phase" class="text-blue-400">Generating…</p>
+        </div>
+      </div>
+      <img id="poster-img" alt="Generated poster" class="w-full h-full object-cover hidden" />
+    </div>
+  </section>
+
+  <!-- Controls + Details -->
+  <aside class="xl:col-span-1 space-y-6">
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Controls</h3>
+      <button id="gen-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl">Generate Poster</button>
+
+      <div class="mt-4">
+        <label class="text-sm text-gray-300">Genre</label>
+        <select id="genre" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="any">Any</option>
+          <option value="horror">Horror</option>
+          <option value="sci-fi">Sci-Fi</option>
+          <option value="fusion">Sci-Fi Horror</option>
+        </select>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm text-gray-300">Era</label>
+        <select id="era" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="any">Any</option>
+          <option>1950s</option><option>1960s</option><option>1970s</option><option>1980s</option>
+          <option>1990s</option><option>2000s</option><option>2010s</option><option>2020s</option>
+        </select>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm text-gray-300">Art Style</label>
+        <select id="style" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
+          <option value="authentic">Era Authentic</option>
+          <option value="b-movie">B-Movie Exaggerated</option>
+          <option value="photo">Modern Photography</option>
+          <option value="painted">Classic Painted</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="glass p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Movie Details</h3>
+      <div class="space-y-3 text-sm">
+        <p><span class="text-gray-400">Era:</span> <span id="d-decade">—</span></p>
+        <p><span class="text-gray-400">Genre:</span> <span id="d-genre">—</span></p>
+        <p class="text-yellow-400 font-bebas text-2xl leading-tight" id="d-title">—</p>
+        <p class="italic text-gray-300" id="d-tagline">—</p>
+        <p class="text-gray-200" id="d-synopsis">—</p>
+      </div>
+    </div>
+
+    <!-- Song Recommendation -->
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">🎵 Soundtrack Rec</h3>
+      <div id="song-container" class="space-y-2">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">🎵</span>
+          <div class="flex-1">
+            <p id="song-title" class="text-sm font-medium text-white">—</p>
+            <p id="song-artist" class="text-xs text-gray-400">—</p>
           </div>
         </div>
+        <p id="song-reason" class="text-xs text-gray-300 italic">—</p>
+        <button id="copy-song-btn" class="w-full mt-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs transition-all disabled:opacity-50" disabled>
+          Copy Song Info
+        </button>
+      </div>
+    </div>
 
-        <div id="poster-wrap" class="w-full max-w-lg mx-auto aspect-[2/3] rounded-xl overflow-hidden poster-shadow relative">
-          <div id="loader" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center z-10 hidden">
-            <div class="text-center">
-              <svg class="w-14 h-14 mx-auto mb-3 animate-spin text-gray-600" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
-              <p id="phase" class="text-blue-400">Generating…</p>
-            </div>
-          </div>
-          <img id="poster-img" alt="Generated poster" class="w-full h-full object-cover hidden" />
-        </div>
-      </section>
+    <!-- Instagram Caption -->
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">📱 Instagram Caption</h3>
+      <div class="bg-gray-800 p-3 rounded-lg">
+        <textarea id="instagram-caption" class="w-full bg-transparent text-xs text-gray-300 resize-none border-none outline-none" rows="6" readonly placeholder="Generate a poster to see Instagram caption..."></textarea>
+        <button id="copy-caption-btn" class="w-full mt-2 px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-xs transition-all disabled:opacity-50" disabled>
+          Copy Caption
+        </button>
+      </div>
+    </div>
 
-      <!-- Controls + Details -->
-      <aside class="xl:col-span-1 space-y-6">
-        <div class="glass p-6 rounded-2xl">
-          <h3 class="text-xl font-montserrat font-bold mb-4">Controls</h3>
-          <button id="gen-btn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl">Generate Poster</button>
+    <div class="glass p-6 rounded-2xl">
+      <h3 class="text-xl font-montserrat font-bold mb-4">Recent</h3>
+      <div id="recent" class="grid grid-cols-2 gap-2"></div>
+    </div>
+  </aside>
+</main>
+```
 
-          <div class="mt-4">
-            <label class="text-sm text-gray-300">Genre</label>
-            <select id="genre" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
-              <option value="any">Any</option>
-              <option value="horror">Horror</option>
-              <option value="sci-fi">Sci-Fi</option>
-              <option value="fusion">Sci-Fi Horror</option>
-            </select>
-          </div>
-
-          <div class="mt-3">
-            <label class="text-sm text-gray-300">Era</label>
-            <select id="era" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
-              <option value="any">Any</option>
-              <option>1950s</option><option>1960s</option><option>1970s</option><option>1980s</option>
-              <option>1990s</option><option>2000s</option><option>2010s</option><option>2020s</option>
-            </select>
-          </div>
-
-          <div class="mt-3">
-            <label class="text-sm text-gray-300">Art Style</label>
-            <select id="style" class="w-full mt-1 bg-gray-700 border border-gray-600 rounded px-3 py-2">
-              <option value="authentic">Era Authentic</option>
-              <option value="b-movie">B-Movie Exaggerated</option>
-              <option value="photo">Modern Photography</option>
-              <option value="painted">Classic Painted</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="glass p-6 rounded-2xl custom-scrollbar max-h-96 overflow-y-auto">
-          <h3 class="text-xl font-montserrat font-bold mb-4">Movie Details</h3>
-          <div class="space-y-3 text-sm">
-            <p><span class="text-gray-400">Era:</span> <span id="d-decade">—</span></p>
-            <p><span class="text-gray-400">Genre:</span> <span id="d-genre">—</span></p>
-            <p class="text-yellow-400 font-bebas text-2xl leading-tight" id="d-title">—</p>
-            <p class="italic text-gray-300" id="d-tagline">—</p>
-            <p class="text-gray-200" id="d-synopsis">—</p>
-          </div>
-        </div>
-
-        <div class="glass p-6 rounded-2xl">
-          <h3 class="text-xl font-montserrat font-bold mb-4">Recent</h3>
-          <div id="recent" class="grid grid-cols-2 gap-2"></div>
-        </div>
-      </aside>
-    </main>
   </div>
 
-  <canvas id="canvas" class="hidden"></canvas>
+<canvas id="canvas" class="hidden"></canvas>
 
   <script>
     // ---------- Simple state ----------
@@ -128,6 +161,12 @@
       dTitle: document.getElementById('d-title'),
       dTagline: document.getElementById('d-tagline'),
       dSynopsis: document.getElementById('d-synopsis'),
+      songTitle: document.getElementById('song-title'),
+      songArtist: document.getElementById('song-artist'),
+      songReason: document.getElementById('song-reason'),
+      copySongBtn: document.getElementById('copy-song-btn'),
+      instagramCaption: document.getElementById('instagram-caption'),
+      copyCaptionBtn: document.getElementById('copy-caption-btn'),
       recent: document.getElementById('recent'),
       canvas: document.getElementById('canvas'),
     };
@@ -204,11 +243,23 @@
       if (title) {
         let fontSize = Math.min(120, w/8); ctx.font = `bold ${fontSize}px Bebas Neue`;
         while (ctx.measureText(title).width > w*0.88) { fontSize -= 2; ctx.font = `bold ${fontSize}px Bebas Neue`; }
-        ctx.fillStyle = '#000'; ctx.globalAlpha = .8; // soft outline via shadow
+        
+        // Enhanced professional text rendering
+        ctx.fillStyle = '#000'; ctx.globalAlpha = .8;
         ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = Math.max(fontSize/6,10);
+        ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3;
+        
+        // Multiple passes for depth
         ctx.fillStyle = '#fff'; ctx.globalAlpha = 1;
+        ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.lineWidth = Math.max(fontSize/20, 2);
+        ctx.strokeText(title, w/2, h*0.15);
         ctx.fillText(title, w/2, h*0.15);
-        ctx.shadowBlur = 0;
+        
+        // Add subtle highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillText(title, w/2, h*0.15 - 1);
+        
+        ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
       }
 
       // Tagline (below title)
@@ -219,22 +270,80 @@
         ctx.lineWidth = 3; ctx.strokeText(tagline, w/2, h*0.24); ctx.fillText(tagline, w/2, h*0.24);
       }
 
-      // Simple bottom credits band
+      // Enhanced bottom credits
       const credits = [
         concept.cast && concept.cast.length ? concept.cast.slice(0,3).join('    ').toUpperCase() : '',
         concept.director ? `DIRECTED BY ${concept.director.toUpperCase()}` : '',
-        'A SYNTHETIC CINEMA FILM', 'NR  •  120 MINUTES', `© ${(new Date).getFullYear()} SYNTHETIC CINEMA`
+        'A SYNTHETIC CINEMA FILM', 
+        `${concept.rating || 'NR'}  •  ${concept.runtime || 120} MINUTES`, 
+        `© ${(new Date).getFullYear()} SYNTHETIC ENTERTAINMENT`
       ].filter(Boolean);
 
       let fs = Math.max(16, Math.floor(w/45)); ctx.font = `bold ${fs}px Lato`;
       ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.strokeStyle = 'rgba(0,0,0,.9)'; ctx.lineWidth = 3;
       const startY = h*0.86, lh = fs*1.6;
-      credits.forEach((line,i)=>{ const y = startY + i*lh; ctx.strokeText(line,w/2,y); ctx.fillText(line,w/2,y); });
+      
+      credits.forEach((line,i)=>{
+        const y = startY + i*lh;
+        ctx.strokeText(line,w/2,y);
+        ctx.fillText(line,w/2,y);
+      });
+    }
+
+    // Song recommendation
+    async function fetchSongRecommendation(concept) {
+      try {
+        const response = await fetch('/api/get-song-recommendation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept })
+        });
+
+        if (!response.ok) throw new Error('Song request failed');
+        
+        const result = await response.json();
+        const song = result.song;
+        
+        els.songTitle.textContent = song.title;
+        els.songArtist.textContent = song.artist;
+        els.songReason.textContent = song.reason;
+        els.copySongBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Song recommendation error:', error);
+        els.songTitle.textContent = 'Unable to load';
+        els.songArtist.textContent = 'recommendation';
+        els.songReason.textContent = 'Try generating again';
+        els.copySongBtn.disabled = true;
+      }
+    }
+
+    // Instagram caption
+    async function fetchInstagramCaption(concept) {
+      try {
+        const response = await fetch('/api/generate-instagram-caption', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept })
+        });
+
+        if (!response.ok) throw new Error('Caption request failed');
+        
+        const result = await response.json();
+        els.instagramCaption.value = result.caption;
+        els.copyCaptionBtn.disabled = false;
+        
+      } catch (error) {
+        console.error('Instagram caption error:', error);
+        els.instagramCaption.value = 'Unable to generate caption. Try again.';
+        els.copyCaptionBtn.disabled = true;
+      }
     }
 
     async function handleGenerate() {
       try {
         setLoading(true,'Concept…');
+        
         // 1) Concept
         const cRes = await fetch('/api/generate-concept', {
           method: 'POST',
@@ -246,11 +355,15 @@
           const err = await cRes.json().catch(() => ({}));
           throw new Error(err.error || `Concept request failed (${cRes.status})`);
         }
+        
         const cJson = await cRes.json();
         currentConcept = cJson.concept || {};
-        // carry style choice to server-side prompt
         currentConcept.artStyle = els.style.value;
         updateDetails(currentConcept);
+
+        // Generate song recommendation and Instagram caption in parallel
+        fetchSongRecommendation(currentConcept);
+        fetchInstagramCaption(currentConcept);
 
         // 2) Image
         setLoading(true,'Artwork…');
@@ -261,7 +374,12 @@
             visualElements: currentConcept.visual_elements
           })
         });
-        if (!iRes.ok) throw new Error('Image request failed');
+        
+        if (!iRes.ok) {
+          const err = await iRes.json().catch(() => ({}));
+          throw new Error(err.error || 'Image generation failed');
+        }
+        
         const iJson = await iRes.json();
         const base64 = iJson.imageUrl;
 
@@ -276,14 +394,20 @@
           els.posterImg.src = out;
           els.posterImg.classList.remove('hidden');
           addRecent(out);
-          generationCount++; els.count.textContent = `${generationCount} poster${generationCount===1?'':'s'} created`;
+          generationCount++; 
+          els.count.textContent = `${generationCount} poster${generationCount===1?'':'s'} created`;
           setLoading(false);
         };
-        img.onerror = () => { setLoading(false); alert('Failed to load generated image'); };
+        img.onerror = () => { 
+          setLoading(false); 
+          alert('Failed to load generated image'); 
+        };
         img.src = base64;
+        
       } catch (e) {
         setLoading(false);
-        alert(e.message || 'Error');
+        console.error('Generation error:', e);
+        alert(`Error: ${e.message}`);
       }
     }
 
@@ -297,19 +421,93 @@
       els.saveBtn.disabled = false; els.shareBtn.disabled = false;
     }
 
+    // Copy functions
+    async function copySongInfo() {
+      if (!els.songTitle.textContent || els.songTitle.textContent === '—') return;
+      
+      const songInfo = `🎵 Soundtrack Recommendation:\n"${els.songTitle.textContent}" by ${els.songArtist.textContent}\n\n${els.songReason.textContent}`;
+      
+      try {
+        await navigator.clipboard.writeText(songInfo);
+        const originalText = els.copySongBtn.textContent;
+        els.copySongBtn.textContent = 'Copied! ✓';
+        els.copySongBtn.classList.add('bg-green-600');
+        els.copySongBtn.classList.remove('bg-indigo-600');
+        
+        setTimeout(() => {
+          els.copySongBtn.textContent = originalText;
+          els.copySongBtn.classList.remove('bg-green-600');
+          els.copySongBtn.classList.add('bg-indigo-600');
+        }, 2000);
+      } catch (error) {
+        console.error('Error copying song info:', error);
+        alert('Failed to copy song info');
+      }
+    }
+
+    async function copyInstagramCaption() {
+      if (!els.instagramCaption.value) return;
+      
+      try {
+        await navigator.clipboard.writeText(els.instagramCaption.value);
+        const originalText = els.copyCaptionBtn.textContent;
+        els.copyCaptionBtn.textContent = 'Copied! ✓';
+        els.copyCaptionBtn.classList.add('bg-green-600');
+        els.copyCaptionBtn.classList.remove('bg-pink-600');
+        
+        setTimeout(() => {
+          els.copyCaptionBtn.textContent = originalText;
+          els.copyCaptionBtn.classList.remove('bg-green-600');
+          els.copyCaptionBtn.classList.add('bg-pink-600');
+        }, 2000);
+      } catch (error) {
+        console.error('Error copying caption:', error);
+        alert('Failed to copy caption');
+      }
+    }
+
+    // Event listeners
     els.genBtn.addEventListener('click', handleGenerate);
+    els.copySongBtn.addEventListener('click', copySongInfo);
+    els.copyCaptionBtn.addEventListener('click', copyInstagramCaption);
+    
     els.saveBtn.addEventListener('click', ()=>{
       if (!els.posterImg.src) return;
       const a = document.createElement('a');
       const t = currentConcept?.title ? currentConcept.title.replace(/\s+/g,'-') : 'poster';
       a.download = `poster-${t}.png`; a.href = els.posterImg.src; a.click();
     });
+    
     els.shareBtn.addEventListener('click', async ()=>{
       if (!els.posterImg.src) return;
       const text = `AI poster: "${currentConcept?.title||''}" — ${currentConcept?.tagline||''}`;
-      if (navigator.share) { try { await navigator.share({ title: 'Poster', text, url: location.href }); } catch{} }
-      else { await navigator.clipboard.writeText(text); }
+      if (navigator.share) { 
+        try { 
+          await navigator.share({ 
+            title: 'Movie Poster', 
+            text, 
+            url: location.href 
+          }); 
+        } catch{} 
+      } else { 
+        await navigator.clipboard.writeText(text); 
+        alert('Poster info copied to clipboard!');
+      }
+    });
+
+    // Generate on filter change
+    els.genre.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
+    });
+    
+    els.era.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
+    });
+    
+    els.style.addEventListener('change', () => {
+      if (!els.genBtn.disabled) handleGenerate();
     });
   </script>
+
 </body>
 </html>
