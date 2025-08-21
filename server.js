@@ -25,55 +25,95 @@ app.post('/api/generate-concept', async (req, res) => {
     const genreMap = {
       horror: '"Horror"',
       'sci-fi': '"Sci-Fi"',
-      fusion: 'a creative fusion of Horror and Sci-Fi',
+      fusion: 'a creative fusion of Horror and Sci-Fi'
     };
 
-    const randomDecade = ['1950s','1960s','1970s','1980s','1990s','2000s','2010s','2020s'][Math.floor(Math.random()*8)];
+    const decades = ['1950s','1960s','1970s','1980s','1990s','2000s','2010s','2020s'];
+    const randomDecade = decades[Math.floor(Math.random()*decades.length)];
     const eraConstraint = eraFilter === 'any' ? `MUST be "${randomDecade}"` : `MUST be "${eraFilter}"`;
-    const genreConstraint = genreFilter === 'any' ? `The genre MUST be 'Horror', 'Sci-Fi', or a creative fusion of both` : `The genre MUST be ${genreMap[genreFilter]}`;
+    const genreConstraint = genreFilter === 'any'
+      ? `The genre MUST be 'Horror', 'Sci-Fi', or a creative fusion of both`
+      : `The genre MUST be ${genreMap[genreFilter]}`;
 
     const prompt = `Return ONLY valid JSON with keys "decade","genre","title","tagline","synopsis","visual_elements","cast","director".
 Rules:
 - ${eraConstraint}
 - ${genreConstraint}
-- Title should be short and striking.
-- Visual_elements should describe 1 focal subject and 2–3 scene beats, concise.
-Example keys:
+- Title short and striking.
+- "visual_elements" should be: 1 focal subject + 2–3 concise scene beats.
+
+Example:
 {
   "decade":"1980s",
   "genre":"Sci-Fi Horror",
   "title":"Neon Parallax",
   "tagline":"The city blinked—and forgot you existed.",
   "synopsis":"One paragraph, high-concept, original.",
-  "visual_elements":"single subject; low-angle; neon rains; reflective pavement; distant drones",
-  "cast":["First Last","First Last","First Last"],
-  "director":"First Last"
+  "visual_elements":"single subject; low-angle; neon rain; reflective pavement; distant drones",
+  "cast":["Mira Reeves","Dakota Chen","Alexander Thorne"],
+  "director":"Cameron Reed Sullivan"
 }`;
 
+    // IMPORTANT: use a stable, known-good model + content block array
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type':'application/json',
+        'content-type': 'application/json',
         'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version':'2023-06-01'
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-5-sonnet-20240620',
         max_tokens: 800,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [
+          {
+            role: 'user',
+            content: [{ type: 'text', text: prompt }]
+          }
+        ]
       })
     });
 
-    if (!resp.ok) throw new Error(`Claude error ${resp.status}: ${await resp.text()}`);
+    // If Anthropic errors, forward full detail so the client can show it
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('Claude error:', resp.status, errText);
+      return res.status(resp.status).json({
+        success: false,
+        error: `Claude API error ${resp.status}: ${errText}`
+      });
+    }
+
     const data = await resp.json();
+
     const text = data?.content?.[0]?.text || '';
-    const json = text.match(/\{[\s\S]*\}/)?.[0];
-    if (!json) throw new Error('Claude returned no JSON');
-    const concept = JSON.parse(json);
-    res.json({ success:true, concept });
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('Claude returned no JSON:', text);
+      return res.status(502).json({
+        success: false,
+        error: 'Claude returned no parsable JSON'
+      });
+    }
+
+    let concept;
+    try {
+      concept = JSON.parse(jsonMatch[0]);
+    } catch (e) {
+      console.error('JSON parse fail:', e, jsonMatch[0]);
+      return res.status(502).json({
+        success: false,
+        error: 'Failed to parse JSON from Claude'
+      });
+    }
+
+    return res.json({ success: true, concept });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ success:false, error: e.message || 'Failed to generate concept' });
+    console.error('Concept route exception:', e);
+    return res.status(500).json({
+      success: false,
+      error: e.message || 'Failed to generate movie concept'
+    });
   }
 });
 
