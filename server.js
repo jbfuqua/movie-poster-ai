@@ -15,9 +15,11 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 if (!ANTHROPIC_API_KEY || !OPENAI_API_KEY) {
-console.error(‘❌ Missing required API keys in environment variables’);
+console.error(‘Missing required API keys in environment variables’);
 console.error(‘Required: ANTHROPIC_API_KEY, OPENAI_API_KEY’);
-process.exit(1);
+if (process.env.NODE_ENV !== ‘production’) {
+console.error(‘Make sure you have a .env file with your API keys’);
+}
 }
 
 // Rate limiting
@@ -170,10 +172,10 @@ const selectedSong = genreSongs[Math.floor(Math.random() * genreSongs.length)];
 // Add context to reason
 let contextReason = selectedSong.reason;
 if (concept.title) {
-contextReason += ` - Perfect for "${concept.title}"`;
+contextReason += ’ - Perfect for “’ + concept.title + ‘”’;
 }
 if (concept.decade && concept.genre) {
-contextReason += `, captures ${concept.decade} ${concept.genre.toLowerCase()} atmosphere`;
+contextReason += ‘, captures ’ + concept.decade + ’ ’ + concept.genre.toLowerCase() + ’ atmosphere’;
 }
 
 return {
