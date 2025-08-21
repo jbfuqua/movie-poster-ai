@@ -458,9 +458,13 @@
             console.log("Generating poster image with DALL-E 3 via backend...");
             this.updateProgress('image', 50);
             
+            // Enhanced photorealistic prompt construction
+            var enhancedPrompt = this.buildPhotorealisticPrompt(concept, visualElements);
+            
             var payload = {
                 visualElements: visualElements,
-                concept: concept
+                concept: concept,
+                enhancedPrompt: enhancedPrompt
             };
 
             try {
@@ -501,6 +505,82 @@
                 this.showError('Failed to generate poster image: ' + error.message);
                 return null;
             }
+        }
+
+        buildPhotorealisticPrompt(concept, visualElements) {
+            var genre = (concept.genre || '').toLowerCase();
+            var decade = concept.decade || '2020s';
+            
+            // Base photorealism instructions
+            var baseInstructions = [
+                'Photorealistic',
+                'professional movie poster photography',
+                'cinematic lighting',
+                'high contrast',
+                'dramatic shadows',
+                'film grain texture',
+                'professional color grading'
+            ];
+            
+            // Decade-specific photography styles
+            var decadeStyles = {
+                '1950s': 'classic Hollywood photography, film noir lighting, black and white or muted color palette, vintage camera aesthetics',
+                '1960s': 'vibrant Technicolor, bold composition, psychedelic color schemes, dynamic camera angles',
+                '1970s': 'gritty realism, natural lighting, earth tones, documentary photography style, grainy film texture',
+                '1980s': 'neon lighting, high contrast, saturated colors, dramatic backlighting, synthwave aesthetics',
+                '1990s': 'MTV-style photography, grunge aesthetics, desaturated colors, alternative lighting',
+                '2000s': 'digital photography look, clean composition, modern color grading, sharp focus',
+                '2010s': 'IMAX quality, high dynamic range, modern cinematography, sleek composition',
+                '2020s': 'ultra-high definition, perfect lighting, contemporary cinematography, premium production value'
+            };
+            
+            // Genre-specific photography directions
+            var genrePhotography = {
+                horror: 'dark atmospheric lighting, ominous shadows, chiaroscuro lighting, foggy atmosphere, gothic mood, realistic horror makeup and effects',
+                'sci-fi': 'futuristic lighting, lens flares, metallic textures, space photography, realistic sci-fi environments, detailed technological elements',
+                thriller: 'dramatic noir lighting, urban photography, realistic suspenseful atmosphere, gritty city environments',
+                action: 'dynamic motion blur, explosive lighting, realistic action photography, high-speed camera effects',
+                drama: 'natural portrait lighting, emotional close-ups, realistic human expressions, documentary-style photography',
+                romance: 'soft romantic lighting, warm color palette, intimate photography, realistic romantic settings'
+            };
+            
+            // Build enhanced prompt
+            var prompt = baseInstructions.join(', ') + '. ';
+            
+            // Add decade-specific style
+            if (decadeStyles[decade]) {
+                prompt += decadeStyles[decade] + '. ';
+            }
+            
+            // Add genre-specific photography
+            var genreKey = Object.keys(genrePhotography).find(g => genre.includes(g)) || 'drama';
+            prompt += genrePhotography[genreKey] + '. ';
+            
+            // Add visual elements with photorealism emphasis
+            if (visualElements) {
+                prompt += 'Photorealistic depiction of: ' + visualElements + '. ';
+            }
+            
+            // Add composition and technical details
+            prompt += 'Professional movie poster composition, ' +
+                     'rule of thirds, dramatic depth of field, ' +
+                     'realistic human anatomy and proportions, ' +
+                     'authentic costume design, realistic set design, ' +
+                     'professional makeup and hair styling. ';
+            
+            // Add final quality instructions
+            prompt += 'Shot with professional cinema cameras, ' +
+                     'perfect exposure, realistic textures and materials, ' +
+                     'no cartoon or animated elements, ' +
+                     'photojournalism quality, ' +
+                     'commercial photography standards. ';
+            
+            // Critical constraint
+            prompt += 'CRITICAL: NO TEXT, NO TITLES, NO LETTERS anywhere in the image - pure photorealistic artwork only. ';
+            prompt += 'Make it look like a genuine photograph that could be used as a movie poster background.';
+            
+            console.log('Enhanced photorealistic prompt:', prompt);
+            return prompt;
         }
 
         addTextToImage(imageUrl, concept) {
