@@ -237,10 +237,15 @@
         setLoading(true,'Concept…');
         // 1) Concept
         const cRes = await fetch('/api/generate-concept', {
-          method:'POST', headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ genreFilter: els.genre.value, eraFilter: els.era.value })
         });
-        if (!cRes.ok) throw new Error('Concept request failed');
+
+        if (!cRes.ok) {
+          const err = await cRes.json().catch(() => ({}));
+          throw new Error(err.error || `Concept request failed (${cRes.status})`);
+        }
         const cJson = await cRes.json();
         currentConcept = cJson.concept || {};
         // carry style choice to server-side prompt
